@@ -1,5 +1,18 @@
 import Link from 'next/link';
 
+function GoldenLogo() {
+  return (
+    <Link href="/" className="flex flex-col items-center gap-1">
+      <span className="font-syne text-white tracking-[0.35em] text-[15px] font-light">GOLDEN</span>
+      <div className="flex items-center gap-2">
+        <div className="w-7 h-px bg-gradient-to-r from-transparent to-gold opacity-80" />
+        <span className="font-syne text-gold tracking-[0.3em] text-[10px]">INVEST</span>
+        <div className="w-7 h-px bg-gradient-to-l from-transparent to-gold opacity-80" />
+      </div>
+    </Link>
+  );
+}
+
 export default function Footer() {
   return (
     <footer className="bg-bg border-t border-white/10 pt-28 pb-14 px-6 font-sans relative">
@@ -11,16 +24,8 @@ export default function Footer() {
 
         {/* LOGO */}
         <div>
-          <Link href="/" className="flex items-center gap-3 mb-6">
-            <div className="w-11 h-11 border-2 border-gold rounded-full flex items-center justify-center font-bold text-gold text-lg">
-              G
-            </div>
-            <span className="text-xl font-bold text-white uppercase tracking-wide">
-              Golden <span className="text-gold">Invest</span>
-            </span>
-          </Link>
-
-          <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
+          <GoldenLogo />
+          <p className="text-gray-400 text-sm leading-relaxed max-w-xs mt-6">
             Plateforme d’investissement stratégique dédiée à connecter investisseurs et porteurs de projets au Bénin et en Afrique.
           </p>
         </div>
@@ -73,12 +78,9 @@ export default function Footer() {
 
       {/* Bas du footer */}
       <div className="max-w-7xl mx-auto pt-10 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
-
         <p className="text-gray-500 text-xs tracking-widest text-center md:text-left">
           © 2026 GOLDEN INVEST — Tous droits réservés
         </p>
-
-        {/* Réseaux (optionnel mais stylé) */}
         <div className="flex gap-6 text-white/60 text-sm">
           <span className="hover:text-gold cursor-pointer transition">Facebook</span>
           <span className="hover:text-gold cursor-pointer transition">LinkedIn</span>

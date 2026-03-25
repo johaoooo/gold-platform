@@ -1,32 +1,28 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Routes accessibles uniquement si connecté
-const PROTECTED = ['/dashboard'];
-// Routes accessibles uniquement si NON connecté
-const AUTH_ONLY = ['/login', '/register'];
-
 export function middleware(request: NextRequest) {
+  const token = request.cookies.get('access_token')?.value;
   const { pathname } = request.nextUrl;
 
-  // Next.js ne peut pas lire localStorage — on utilise un cookie httpOnly
-  // à poser au moment du login (voir ci-dessous)
-  const token = request.cookies.get('access_token')?.value;
+  // Pages publiques
+  const publicPages = ['/connexion', '/inscription'];
+  const isPublicPage = publicPages.some((p) => pathname === p);
+  
+  // Pages protégées
+  const isProtected = pathname.startsWith('/dashboard');
 
-  const isProtected = PROTECTED.some((p) => pathname.startsWith(p));
-  const isAuthOnly  = AUTH_ONLY.some((p)  => pathname.startsWith(p));
-
+  // Si pas de token et page protégée → rediriger vers connexion
   if (isProtected && !token) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/connexion', request.url));
   }
 
-  if (isAuthOnly && token) {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-
+  // Si token et page publique → NE PAS rediriger automatiquement
+  // L'utilisateur choisit de se déconnecter s'il le souhaite
+  
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/register'],
+  matcher: ['/dashboard/:path*', '/connexion', '/inscription'],
 };

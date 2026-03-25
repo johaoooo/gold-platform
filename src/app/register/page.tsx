@@ -116,7 +116,7 @@ export default function RegisterPage() {
 
           <p className="text-center mt-6 text-sm text-gray-400">
             Déjà membre ?{' '}
-            <Link href="/login" className="text-gold hover:underline font-bold">Se connecter</Link>
+            <Link href="/connexion" className="text-gold hover:underline font-bold">Se connecter</Link>
           </p>
         </form>
       </div>

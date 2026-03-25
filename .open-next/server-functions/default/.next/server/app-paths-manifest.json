@@ -1,0 +1,14 @@
+{
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/contact/page": "app/contact/page.js",
+  "/dashboard/investisseur/page": "app/dashboard/investisseur/page.js",
+  "/dashboard/porteur/page": "app/dashboard/porteur/page.js",
+  "/deposer/page": "app/deposer/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/processus/page": "app/processus/page.js",
+  "/profils/page": "app/profils/page.js",
+  "/projets/page": "app/projets/page.js",
+  "/register/page": "app/register/page.js"
+}

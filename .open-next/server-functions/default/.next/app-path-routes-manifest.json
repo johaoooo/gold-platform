@@ -1,0 +1,14 @@
+{
+  "/favicon.ico/route": "/favicon.ico",
+  "/_not-found/page": "/_not-found",
+  "/contact/page": "/contact",
+  "/dashboard/investisseur/page": "/dashboard/investisseur",
+  "/dashboard/porteur/page": "/dashboard/porteur",
+  "/deposer/page": "/deposer",
+  "/login/page": "/login",
+  "/page": "/",
+  "/processus/page": "/processus",
+  "/profils/page": "/profils",
+  "/projets/page": "/projets",
+  "/register/page": "/register"
+}

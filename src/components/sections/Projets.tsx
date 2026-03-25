@@ -1,28 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '../ui/Button';
+import { getProjects } from '@/services/api';
 
 type Secteur = 'tous' | 'tech' | 'agriculture' | 'immobilier' | 'energie' | 'sante';
 
 interface Projet {
   id: number;
   titre: string;
-  secteur: Exclude<Secteur, 'tous'>;
-  montant: string;
+  secteur: string;
+  montant_cible: number;
   localisation: string;
   description: string;
-  image: string;
+  progression: number;
+  montant_actuel: number;
+  porteur: string;
 }
-
-const projets: Projet[] = [
-  { id: 1, titre: 'AgriTech Bénin', secteur: 'agriculture', montant: '500 000 FCFA', localisation: 'Cotonou, Bénin', description: 'Plateforme IoT pour agriculteurs.', image: '#' },
-  { id: 2, titre: 'SolarHub', secteur: 'energie', montant: '1 200 000 FCFA', localisation: 'Dakar, Sénégal', description: 'Énergie solaire rurale.', image: '#' },
-  { id: 3, titre: 'ImmoFacile', secteur: 'immobilier', montant: '800 000 FCFA', localisation: 'Abidjan, CI', description: 'Visites virtuelles immobilières.', image: '#' },
-  { id: 4, titre: 'E-Santé Africa', secteur: 'sante', montant: '2 000 000 FCFA', localisation: 'Yaoundé, Cameroun', description: 'Télémédecine mobile.', image: '#' },
-  { id: 5, titre: 'EdTech Plus', secteur: 'tech', montant: '950 000 FCFA', localisation: 'Ouagadougou, BF', description: 'Cours en ligne certifiants.', image: '#' },
-  { id: 6, titre: 'Green Agro', secteur: 'agriculture', montant: '1 500 000 FCFA', localisation: 'Bamako, Mali', description: 'Engrais bio-organiques.', image: '#' },
-];
 
 const secteurs: { value: Secteur; label: string }[] = [
   { value: 'tous', label: 'Tous' },
@@ -35,48 +29,154 @@ const secteurs: { value: Secteur; label: string }[] = [
 
 export default function Projets() {
   const [secteurActif, setSecteurActif] = useState<Secteur>('tous');
+  const [projets, setProjets] = useState<Projet[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const projetsFiltres = secteurActif === 'tous' 
-    ? projets 
-    : projets.filter((p) => p.secteur === secteurActif);
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    setLoading(true);
+    try {
+      const response = await getProjects();
+      setProjets(response.data);
+      setError(null);
+    } catch (err: any) {
+      console.error('Erreur lors du chargement des projets:', err);
+      if (err.response?.status === 403) {
+        setError('Votre compte est en attente de validation par un administrateur.');
+      } else {
+        setError('Impossible de charger les projets. Veuillez réessayer.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const projetsFiltres =
+    secteurActif === 'tous'
+      ? projets
+      : projets.filter((p) => p.secteur === secteurActif);
+
+  const formatMontant = (montant: number) => {
+    return new Intl.NumberFormat('fr-FR').format(montant) + ' FCFA';
+  };
+
+  if (loading) {
+    return (
+      <section className="py-32 bg-bg">
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <p className="text-text-2 font-dm">Chargement des projets...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-32 bg-bg">
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <p className="text-red-500 font-dm">{error}</p>
+          <Button variant="outline" className="mt-4" onClick={fetchProjects}>
+            Réessayer
+          </Button>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="py-24 bg-bg" id="projets">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-playfair text-gold mb-4">Projets à financer</h2>
-          <p className="text-text-2 font-dm">Opportunités d'investissement en Afrique francophone.</p>
+    <section className="py-32 bg-bg">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-playfair text-gold mb-4">
+            Projets à financer
+          </h2>
+          <p className="text-text-2 font-dm max-w-2xl mx-auto">
+            Découvrez des opportunités d'investissement dans des secteurs porteurs en Afrique francophone.
+          </p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-3 mb-16">
-          {secteurs.map((s) => (
+          {secteurs.map((secteur) => (
             <button
-              key={s.value}
-              onClick={() => setSecteurActif(s.value)}
-              className={`px-6 py-2 rounded-full font-syne text-sm transition-all ${
-                secteurActif === s.value ? 'bg-gold text-bg font-bold' : 'bg-surface-2 text-text-2 border border-gold/10'
+              key={secteur.value}
+              onClick={() => setSecteurActif(secteur.value)}
+              className={`px-6 py-2.5 rounded-full font-syne text-sm transition-all duration-300 hover:scale-105 ${
+                secteurActif === secteur.value
+                  ? 'bg-gold text-surface font-semibold shadow-lg'
+                  : 'bg-surface-2 text-text-2 hover:bg-gold/20 hover:text-gold'
               }`}
             >
-              {s.label}
+              {secteur.label}
             </button>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {projetsFiltres.map((p) => (
-            <div key={p.id} className="bg-surface-2/30 border border-gold/5 rounded-2xl p-6 hover:border-gold/30 transition-all group">
-              <div className="flex justify-between mb-4">
-                 <span className="text-[10px] uppercase tracking-widest bg-gold/10 text-gold px-2 py-1 rounded">{p.secteur}</span>
-                 <span className="text-text-2 text-xs">📍 {p.localisation}</span>
+        {projetsFiltres.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-text-2 font-dm">
+              Aucun projet dans ce secteur pour le moment.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {projetsFiltres.map((projet) => (
+              <div
+                key={projet.id}
+                className="group bg-surface rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="h-52 bg-gradient-to-br from-gold/40 to-violet-2/40 flex items-center justify-center relative">
+                  <span className="text-surface-2 font-syne text-sm">Image projet</span>
+                </div>
+                <div className="p-7">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-xl font-playfair text-gold group-hover:text-gold/90 transition">
+                      {projet.titre}
+                    </h3>
+                    <span className="text-xs font-syne bg-gold/20 text-gold px-3 py-1 rounded-full">
+                      {projet.secteur}
+                    </span>
+                  </div>
+                  <p className="text-text-2 font-dm text-sm mb-5 leading-relaxed line-clamp-3">
+                    {projet.description}
+                  </p>
+                  
+                  {/* Barre de progression */}
+                  <div className="mb-4">
+                    <div className="flex justify-between text-xs text-text-2 mb-1">
+                      <span>Progression</span>
+                      <span>{projet.progression}%</span>
+                    </div>
+                    <div className="w-full bg-surface-2 rounded-full h-2">
+                      <div
+                        className="bg-gold rounded-full h-2 transition-all duration-500"
+                        style={{ width: `${projet.progression}%` }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between items-center text-sm mb-5">
+                    <span className="text-gold font-syne font-semibold text-base">
+                      {formatMontant(projet.montant_actuel)} / {formatMontant(projet.montant_cible)}
+                    </span>
+                    <span className="text-text-2 font-dm">{projet.localisation}</span>
+                  </div>
+                  <Button variant="outline" size="md" className="w-full py-3">
+                    Voir le projet
+                  </Button>
+                </div>
               </div>
-              <h3 className="text-xl font-playfair text-white mb-2 group-hover:text-gold">{p.titre}</h3>
-              <p className="text-text-2 text-sm mb-6 line-clamp-2">{p.description}</p>
-              <div className="flex justify-between items-center pt-4 border-t border-gold/10">
-                <span className="text-gold font-bold">{p.montant}</span>
-                <Button variant="outline" size="sm">Détails</Button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        )}
+
+        <div className="text-center mt-16">
+          <Button variant="gold" size="lg" className="px-8 py-4 text-lg">
+            Proposer mon projet
+          </Button>
         </div>
       </div>
     </section>
