@@ -1,0 +1,172 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
+
+// ─── Auth ────────────────────────────────────────────────────────────────────
+
+export async function loginUser(username: string, password: string) {
+  const res = await fetch(`${API_URL}/auth/login/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Identifiants incorrects');
+  return data;
+}
+
+export async function registerUser(payload: {
+  username: string;
+  email: string;
+  password: string;
+  role: string;
+  phone: string;
+}) {
+  const res = await fetch(`${API_URL}/auth/register/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(JSON.stringify(data));
+  return data;
+}
+
+// ─── Tokens (localStorage uniquement côté client) ────────────────────────────
+
+export function saveTokens(access: string, refresh: string) {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('access_token', access);
+  localStorage.setItem('refresh_token', refresh);
+}
+
+export function getAccessToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('access_token');
+}
+
+export function getRefreshToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('refresh_token');
+}
+
+export function logout() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+}
+
+export function isAuthenticated(): boolean {
+  return !!getAccessToken();
+}
+
+// ─── Refresh automatique du token ────────────────────────────────────────────
+
+export async function refreshAccessToken(): Promise<string | null> {
+  const refresh = getRefreshToken();
+  if (!refresh) return null;
+  try {
+    const res = await fetch(`${API_URL}/auth/token/refresh/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh }),
+    });
+    if (!res.ok) { logout(); return null; }
+    const data = await res.json();
+    localStorage.setItem('access_token', data.access);
+    return data.access;
+  } catch {
+    logout();
+    return null;
+  }
+}
+
+// ─── Fetch authentifié (avec refresh automatique) ───────────────────────────
+
+export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
+  let token = getAccessToken();
+  const makeRequest = (t: string | null) =>
+    fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(t ? { Authorization: `Bearer ${t}` } : {}),
+        ...options.headers,
+      },
+    });
+
+  let res = await makeRequest(token);
+
+  // Si 401 → on tente un refresh et on réessaie
+  if (res.status === 401) {
+    token = await refreshAccessToken();
+    if (!token) throw new Error('Session expirée, veuillez vous reconnecter.');
+    res = await makeRequest(token);
+  }
+
+  return res;
+}
+
+// ─── Projets ─────────────────────────────────────────────────────────────────
+
+export async function getProjects(filters?: {
+  secteur?: string;
+  localisation?: string;
+  montant_min?: number;
+  montant_max?: number;
+}) {
+  const params = new URLSearchParams();
+  if (filters?.secteur) params.append('secteur', filters.secteur);
+  if (filters?.localisation) params.append('localisation', filters.localisation);
+  if (filters?.montant_min) params.append('montant_min', String(filters.montant_min));
+  if (filters?.montant_max) params.append('montant_max', String(filters.montant_max));
+
+  const res = await authFetch(`${API_URL}/projects/?${params.toString()}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error('Erreur lors du chargement des projets');
+  return data;
+}
+
+export async function createProject(payload: {
+  titre: string;
+  secteur: string;
+  localisation: string;
+  montant_cible: number;
+  description: string;
+}) {
+  const res = await authFetch(`${API_URL}/projects/`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(JSON.stringify(data));
+  return data;
+}
+
+export async function investInProject(payload: {
+  project_id: number;
+  montant: number;
+  message?: string;
+}) {
+  const res = await authFetch(`${API_URL}/projects/invest/`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(JSON.stringify(data));
+  return data;
+}
+
+export async function getMyInvestments() {
+  const res = await authFetch(`${API_URL}/projects/my-investments/`);
+  const data = await res.json();
+  if (!res.ok) throw new Error('Erreur lors du chargement des investissements');
+  return data;
+}
+
+// ─── Profil ──────────────────────────────────────────────────────────────────
+
+export async function getProfile() {
+  const res = await authFetch(`${API_URL}/auth/profile/`);
+  const data = await res.json();
+  if (!res.ok) throw new Error('Erreur lors du chargement du profil');
+  return data;
+}
