@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-// Détection automatique de l'environnement
-const API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-  ? 'http://127.0.0.1:8000/api'
-  : 'https://backend-gold-iubc.onrender.com/api';
+// ✅ Utilise la variable d'environnement Netlify, avec fallback localhost
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 console.log('🌐 API_BASE_URL:', API_BASE_URL);
 
