@@ -1,0 +1,5 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#8b5a2b"/>
+  <circle cx="200" cy="150" r="80" fill="#b87c3a"/>
+  <text x="200" y="160" text-anchor="middle" fill="white" font-size="24">Immobilier</text>
+</svg>
