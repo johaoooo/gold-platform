@@ -91,7 +91,7 @@ export default function Footer() {
               </h4>
               <ul className="space-y-3">
                 {section.links.map((link) => {
-                  const Icon = link.icon;
+                  const Icon = 'icon' in link ? link.icon : null;
                   return (
                     <li key={link.label}>
                       <Link
