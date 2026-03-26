@@ -3,7 +3,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
 // ─── Auth ────────────────────────────────────────────────────────────────────
 
 export async function loginUser(username: string, password: string) {
-  const res = await fetch(`${API_URL}/auth/login/`, {
+  const res = await fetch(`${API_URL}/auth/connexion/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password }),
