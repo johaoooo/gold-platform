@@ -10,6 +10,7 @@ export default function InscriptionPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -26,6 +27,7 @@ export default function InscriptionPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccessMessage('');
 
     try {
       const response = await fetch(`${API_URL}/auth/register/`, {
@@ -37,27 +39,22 @@ export default function InscriptionPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Connexion automatique après inscription
-        const loginResponse = await fetch(`${API_URL}/auth/login/`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: form.username, password: form.password }),
-        });
-        const loginData = await loginResponse.json();
+        // Afficher le message de confirmation
+        setSuccessMessage(data.message || '✅ Votre demande d\'inscription a bien été envoyée ! Un administrateur va valider votre compte sous 24h.');
         
-        if (loginResponse.ok) {
-          localStorage.setItem('access_token', loginData.access);
-          localStorage.setItem('refresh_token', loginData.refresh);
-          localStorage.setItem('user', JSON.stringify(loginData.user));
-          document.cookie = `access_token=${loginData.access}; path=/; max-age=3600`;
-          
-          // Redirection selon le rôle
-          if (loginData.user.role === 'investisseur') {
-            window.location.href = '/dashboard/investisseur';
-          } else {
-            window.location.href = '/dashboard/porteur';
-          }
-        }
+        // Réinitialiser le formulaire
+        setForm({
+          username: '',
+          email: '',
+          password: '',
+          role: 'investisseur',
+          phone: '',
+        });
+        
+        // Rediriger vers la page de connexion après 3 secondes
+        setTimeout(() => {
+          router.push('/connexion');
+        }, 3000);
       } else {
         setError(data.error || Object.values(data).flat().join(', '));
       }
@@ -76,6 +73,13 @@ export default function InscriptionPage() {
           <h1 className="text-3xl font-playfair text-gold text-center mb-8">
             Inscription
           </h1>
+          
+          {successMessage && (
+            <div className="bg-green-500/20 border border-green-500 text-green-500 rounded-lg p-4 mb-6 text-sm text-center">
+              {successMessage}
+              <div className="text-xs mt-2 text-text-2">Redirection vers la connexion...</div>
+            </div>
+          )}
           
           {error && (
             <div className="bg-red-500/20 border border-red-500 text-red-500 rounded-lg p-3 mb-6 text-sm">
