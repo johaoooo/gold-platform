@@ -113,7 +113,6 @@ export default function Projets() {
     <section className="py-20 bg-bg">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
 
-        {/* En-tête */}
         <div className="text-center mb-12">
           <span className="text-xs uppercase tracking-[0.3em] text-green-500/60 mb-4 block">Opportunités vérifiées</span>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Georgia, serif' }}>
@@ -133,7 +132,6 @@ export default function Projets() {
           )}
         </div>
 
-        {/* Filtres */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
           {secteurs.map((s) => {
             const Icon = s.icon;
@@ -154,7 +152,6 @@ export default function Projets() {
           })}
         </div>
 
-        {/* Grille projets */}
         {projetsFiltres.length === 0 ? (
           <div className="text-center py-20 text-text-2">
             <Building2 size={40} className="mx-auto mb-4 opacity-30" />
@@ -167,7 +164,6 @@ export default function Projets() {
                 key={projet.id}
                 className={`group ${getSecteurColor(projet.secteur)} rounded-2xl overflow-hidden border transition-all duration-500 hover:-translate-y-2 hover:shadow-xl bg-surface`}
               >
-                {/* Image */}
                 <div className="relative h-52 overflow-hidden">
                   <Image
                     src={getSecteurImage(projet.secteur)}
@@ -189,7 +185,6 @@ export default function Projets() {
                   </div>
                 </div>
 
-                {/* Contenu */}
                 <div className="p-5">
                   <h3 className="text-xl font-bold text-white mb-2 group-hover:text-green-500 transition-colors" style={{ fontFamily: 'Georgia, serif' }}>
                     {projet.titre}
@@ -198,7 +193,6 @@ export default function Projets() {
                     {projet.description}
                   </p>
 
-                  {/* Montants */}
                   <div className="flex items-center justify-between text-sm mb-3">
                     <span className="text-green-500 font-bold">{formatMontant(projet.montant_cible)}</span>
                     <span className="flex items-center gap-1 text-text-2 text-xs">
@@ -207,7 +201,6 @@ export default function Projets() {
                     </span>
                   </div>
 
-                  {/* Progression */}
                   <div className="mb-4">
                     <div className="flex justify-between text-xs text-text-2 mb-1">
                       <span>Progression</span>
@@ -221,13 +214,11 @@ export default function Projets() {
                     </div>
                   </div>
 
-                  {/* Porteur */}
                   <div className="flex items-center gap-1.5 text-xs text-text-2 mb-4">
                     <User size={12} />
                     <span>{projet.porteur}</span>
                   </div>
 
-                  {/* CTA */}
                   {isLoggedIn ? (
                     <Link href={`/projets/${projet.id}`}>
                       <Button variant="outline" size="md" className="w-full group-hover:bg-green-500 group-hover:text-white transition-all duration-300">
@@ -251,7 +242,6 @@ export default function Projets() {
           </div>
         )}
 
-        {/* Bouton proposer */}
         <div className="text-center mt-12">
           <button
             onClick={handleProposerProjet}
