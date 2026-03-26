@@ -4,7 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 
-const API_URL = 'http://127.0.0.1:8000/api';
+const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://127.0.0.1:8000/api'
+  : 'https://backend-gold-iubc.onrender.com/api';
 
 export default function InscriptionPage() {
   const router = useRouter();
@@ -29,6 +31,13 @@ export default function InscriptionPage() {
     setError('');
     setSuccessMessage('');
 
+    // Validation du mot de passe
+    if (form.password.length < 8) {
+      setError('Le mot de passe doit contenir au moins 8 caractères');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch(`${API_URL}/auth/register/`, {
         method: 'POST',
@@ -39,7 +48,6 @@ export default function InscriptionPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Afficher le message de confirmation
         setSuccessMessage(data.message || '✅ Votre demande d\'inscription a bien été envoyée ! Un administrateur va valider votre compte sous 24h.');
         
         // Réinitialiser le formulaire
@@ -56,7 +64,16 @@ export default function InscriptionPage() {
           router.push('/connexion');
         }, 3000);
       } else {
-        setError(data.error || Object.values(data).flat().join(', '));
+        // Afficher l'erreur spécifique
+        if (data.password && data.password[0]) {
+          setError(data.password[0]);
+        } else if (data.username && data.username[0]) {
+          setError(data.username[0]);
+        } else if (data.email && data.email[0]) {
+          setError(data.email[0]);
+        } else {
+          setError(data.error || Object.values(data).flat().join(', '));
+        }
       }
     } catch (err) {
       console.error('Erreur:', err);
@@ -122,6 +139,16 @@ export default function InscriptionPage() {
                 className="w-full px-4 py-3 bg-bg border border-surface-2 rounded-lg text-white focus:outline-none focus:border-gold"
                 required
               />
+              {form.password && form.password.length < 8 && (
+                <p className="text-xs text-red-500 mt-1">
+                  ⚠️ Le mot de passe doit contenir au moins 8 caractères
+                </p>
+              )}
+              {form.password && form.password.length >= 8 && (
+                <p className="text-xs text-green-500 mt-1">
+                  ✓ Mot de passe valide
+                </p>
+              )}
             </div>
             
             <div>
@@ -159,6 +186,12 @@ export default function InscriptionPage() {
               Se connecter
             </a>
           </p>
+          
+          <div className="mt-4 pt-4 border-t border-surface-2">
+            <p className="text-xs text-text-3 text-center">
+              📌 Le mot de passe doit contenir au moins 8 caractères
+            </p>
+          </div>
         </div>
       </div>
     </div>
