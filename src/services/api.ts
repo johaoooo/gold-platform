@@ -1,6 +1,11 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+// Détection automatique de l'environnement
+const API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://127.0.0.1:8000/api'
+  : 'https://backend-gold-iubc.onrender.com/api';
+
+console.log('🌐 API_BASE_URL:', API_BASE_URL);
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -56,7 +61,7 @@ export const register = (data: { username: string; email: string; password: stri
   api.post('/auth/register/', data);
 
 export const login = (username: string, password: string) =>
-  api.post('/auth/connexion/', { username, password });
+  api.post('/auth/login/', { username, password });
 
 export const getProfile = () => api.get('/auth/profile/');
 
