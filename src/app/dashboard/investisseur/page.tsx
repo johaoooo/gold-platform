@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getProjects } from '@/services/api';
 import DashboardTabs from '@/components/dashboard/DashboardTabs';
+import { ProjectCardSkeleton, DashboardStatsSkeleton, Skeleton } from '@/components/ui/Skeleton';
 
 interface Project {
   id: number;
@@ -46,8 +47,19 @@ export default function InvestisseurDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-text-2">Chargement du dashboard...</p>
+      <div>
+        <DashboardTabs />
+        <div className="animate-fade-in">
+          <Skeleton className="h-10 w-64 mb-2" />
+          <Skeleton className="h-5 w-96 mb-8" />
+          <DashboardStatsSkeleton />
+          <Skeleton className="h-8 w-48 mb-6" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <ProjectCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -55,15 +67,9 @@ export default function InvestisseurDashboard() {
   return (
     <div>
       <DashboardTabs />
-
-      <h1 className="text-3xl font-playfair text-gold mb-2">
-        Tableau de bord
-      </h1>
-      <p className="text-text-2 mb-8">
-        Bienvenue sur votre espace investisseur 👋
-      </p>
+      <h1 className="text-3xl font-playfair text-gold mb-2">Tableau de bord</h1>
+      <p className="text-text-2 mb-8">Bienvenue sur votre espace investisseur 👋</p>
       
-      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div className="bg-surface rounded-xl p-6 border border-gold/20">
           <p className="text-text-2 text-sm mb-1">Projets disponibles</p>
@@ -79,7 +85,6 @@ export default function InvestisseurDashboard() {
         </div>
       </div>
       
-      {/* Projets récents */}
       <h2 className="text-2xl font-playfair text-gold mb-6">Projets récents</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {projects.map((project) => (
@@ -87,9 +92,7 @@ export default function InvestisseurDashboard() {
             <h3 className="text-xl font-playfair text-gold mb-2 group-hover:text-gold/80">
               {project.titre}
             </h3>
-            <p className="text-text-2 text-sm mb-4 line-clamp-2">
-              {project.description}
-            </p>
+            <p className="text-text-2 text-sm mb-4 line-clamp-2">{project.description}</p>
             <div className="flex justify-between text-sm mb-4">
               <span className="text-gold font-semibold">{formatMontant(project.montant_cible)}</span>
               <span className="text-text-2">{project.localisation}</span>
@@ -100,10 +103,7 @@ export default function InvestisseurDashboard() {
                 <span>{project.progression}%</span>
               </div>
               <div className="w-full bg-surface-2 rounded-full h-2">
-                <div
-                  className="bg-gold rounded-full h-2 transition-all duration-500"
-                  style={{ width: `${project.progression}%` }}
-                />
+                <div className="bg-gold rounded-full h-2" style={{ width: `${project.progression}%` }} />
               </div>
             </div>
             <Link

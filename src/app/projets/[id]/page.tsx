@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getProject, createInvestment } from '@/services/api';
@@ -71,7 +72,7 @@ export default function ProjetDetailPage() {
 
     try {
       await createInvestment(Number(id), amount, investMessage);
-      alert('Votre demande d\'investissement a été envoyée au porteur du projet !');
+      toast.success('Votre demande d\'investissement a été envoyée au porteur du projet !');
       setShowInvestForm(false);
       setInvestAmount('');
       setInvestMessage('');
