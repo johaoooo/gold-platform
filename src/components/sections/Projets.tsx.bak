@@ -71,14 +71,10 @@ export default function Projets() {
   };
 
   const handleProposerProjet = () => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      if (userData.role === 'porteur') {
-        router.push('/dashboard/porteur/nouveau-projet');
-      } else {
-        alert('Seuls les porteurs de projet peuvent proposer un projet. Vous êtes investisseur.');
-      }
+    if (user && user.role === 'porteur') {
+      router.push('/dashboard/porteur/nouveau-projet');
+    } else if (user && user.role === 'investisseur') {
+      alert('Seuls les porteurs de projet peuvent proposer un projet. Vous êtes investisseur.');
     } else {
       router.push('/connexion');
     }
