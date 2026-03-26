@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Twitter, Linkedin, Instagram, MessageCircle, Mail, Phone, MapPin } from 'lucide-react';
 import Button from './Button';
 
 function GoldenLogo() {
@@ -39,18 +40,18 @@ export default function Footer() {
     {
       title: 'Contact',
       links: [
-        { label: 'contact@golden-invest.com', href: 'mailto:contact@golden-invest.com', isEmail: true },
-        { label: '+229 01 23 45 67', href: 'tel:+22901234567' },
-        { label: 'Cotonou, Bénin', href: 'https://maps.google.com' },
+        { label: 'contact@golden-invest.com', href: 'mailto:contact@golden-invest.com', icon: Mail, isEmail: true },
+        { label: '+229 01 23 45 67', href: 'tel:+22901234567', icon: Phone },
+        { label: 'Cotonou, Bénin', href: 'https://maps.google.com', icon: MapPin },
       ],
     },
   ];
 
   const socials = [
-    { name: 'Twitter', icon: '🐦', href: 'https://twitter.com' },
-    { name: 'LinkedIn', icon: '🔗', href: 'https://linkedin.com' },
-    { name: 'Instagram', icon: '📸', href: 'https://instagram.com' },
-    { name: 'WhatsApp', icon: '💬', href: 'https://whatsapp.com' },
+    { name: 'Twitter', icon: Twitter, href: 'https://twitter.com' },
+    { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com' },
+    { name: 'Instagram', icon: Instagram, href: 'https://instagram.com' },
+    { name: 'WhatsApp', icon: MessageCircle, href: 'https://whatsapp.com' },
   ];
 
   return (
@@ -64,17 +65,21 @@ export default function Footer() {
               Connecter les visionnaires aux capitaux. La plateforme de référence pour l'investissement en Afrique.
             </p>
             <div className="flex gap-4 mt-6">
-              {socials.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center text-xl hover:bg-gold hover:text-surface transition-all duration-300 hover:scale-110"
-                >
-                  {social.icon}
-                </a>
-              ))}
+              {socials.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center text-white hover:bg-gold hover:text-surface transition-all duration-300 hover:scale-110"
+                    aria-label={social.name}
+                  >
+                    <Icon size={18} />
+                  </a>
+                );
+              })}
             </div>
           </div>
 
@@ -85,18 +90,20 @@ export default function Footer() {
                 {section.title}
               </h4>
               <ul className="space-y-3">
-                {section.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className={`text-text-2 hover:text-gold transition-colors text-sm ${
-                        link.isEmail ? 'hover:underline' : ''
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
+                {section.links.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <li key={link.label}>
+                      <Link
+                        href={link.href}
+                        className="text-text-2 hover:text-gold transition-colors text-sm flex items-center gap-2"
+                      >
+                        {Icon && <Icon size={14} className="text-gold/60" />}
+                        <span>{link.label}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

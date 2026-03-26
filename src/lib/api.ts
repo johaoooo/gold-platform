@@ -1,9 +1,11 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
+const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://127.0.0.1:8000/api'
+  : process.env.NEXT_PUBLIC_API_URL || 'https://backend-gold-iubc.onrender.com/api';
 
-// ─── Auth ────────────────────────────────────────────────────────────────────
+// ─── Auth ─────────────────────────────────────────────────────────────────────
 
 export async function loginUser(username: string, password: string) {
-  const res = await fetch(`${API_URL}/auth/connexion/`, {
+  const res = await fetch(`${API_URL}/auth/login/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password }),
@@ -30,7 +32,7 @@ export async function registerUser(payload: {
   return data;
 }
 
-// ─── Tokens (localStorage uniquement côté client) ────────────────────────────
+// ─── Tokens ───────────────────────────────────────────────────────────────────
 
 export function saveTokens(access: string, refresh: string) {
   if (typeof window === 'undefined') return;
@@ -52,19 +54,21 @@ export function logout() {
   if (typeof window === 'undefined') return;
   localStorage.removeItem('access_token');
   localStorage.removeItem('refresh_token');
+  localStorage.removeItem('user');
+  document.cookie = 'access_token=; path=/; max-age=0';
 }
 
 export function isAuthenticated(): boolean {
   return !!getAccessToken();
 }
 
-// ─── Refresh automatique du token ────────────────────────────────────────────
+// ─── Refresh automatique ──────────────────────────────────────────────────────
 
 export async function refreshAccessToken(): Promise<string | null> {
   const refresh = getRefreshToken();
   if (!refresh) return null;
   try {
-    const res = await fetch(`${API_URL}/auth/token/refresh/`, {
+    const res = await fetch(`${API_URL}/auth/refresh/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh }),
@@ -79,7 +83,7 @@ export async function refreshAccessToken(): Promise<string | null> {
   }
 }
 
-// ─── Fetch authentifié (avec refresh automatique) ───────────────────────────
+// ─── Fetch authentifié ────────────────────────────────────────────────────────
 
 export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
   let token = getAccessToken();
@@ -95,7 +99,6 @@ export async function authFetch(url: string, options: RequestInit = {}): Promise
 
   let res = await makeRequest(token);
 
-  // Si 401 → on tente un refresh et on réessaie
   if (res.status === 401) {
     token = await refreshAccessToken();
     if (!token) throw new Error('Session expirée, veuillez vous reconnecter.');
@@ -105,7 +108,7 @@ export async function authFetch(url: string, options: RequestInit = {}): Promise
   return res;
 }
 
-// ─── Projets ─────────────────────────────────────────────────────────────────
+// ─── Projets (PUBLIC — pas besoin de token) ───────────────────────────────────
 
 export async function getProjects(filters?: {
   secteur?: string;
@@ -114,14 +117,25 @@ export async function getProjects(filters?: {
   montant_max?: number;
 }) {
   const params = new URLSearchParams();
-  if (filters?.secteur) params.append('secteur', filters.secteur);
+  if (filters?.secteur)     params.append('secteur', filters.secteur);
   if (filters?.localisation) params.append('localisation', filters.localisation);
   if (filters?.montant_min) params.append('montant_min', String(filters.montant_min));
   if (filters?.montant_max) params.append('montant_max', String(filters.montant_max));
 
-  const res = await authFetch(`${API_URL}/projects/?${params.toString()}`);
+  const res = await fetch(`${API_URL}/projects/?${params.toString()}`, {
+    headers: { 'Content-Type': 'application/json' },
+  });
   const data = await res.json();
   if (!res.ok) throw new Error('Erreur lors du chargement des projets');
+  return data;
+}
+
+export async function getProjectById(id: number) {
+  const res = await fetch(`${API_URL}/projects/${id}/`, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error('Projet introuvable');
   return data;
 }
 
@@ -142,11 +156,11 @@ export async function createProject(payload: {
 }
 
 export async function investInProject(payload: {
-  project_id: number;
+  projet_id: number;
   montant: number;
   message?: string;
 }) {
-  const res = await authFetch(`${API_URL}/projects/invest/`, {
+  const res = await authFetch(`${API_URL}/investments/create/`, {
     method: 'POST',
     body: JSON.stringify(payload),
   });
@@ -156,13 +170,13 @@ export async function investInProject(payload: {
 }
 
 export async function getMyInvestments() {
-  const res = await authFetch(`${API_URL}/projects/my-investments/`);
+  const res = await authFetch(`${API_URL}/investments/my/`);
   const data = await res.json();
   if (!res.ok) throw new Error('Erreur lors du chargement des investissements');
   return data;
 }
 
-// ─── Profil ──────────────────────────────────────────────────────────────────
+// ─── Profil ───────────────────────────────────────────────────────────────────
 
 export async function getProfile() {
   const res = await authFetch(`${API_URL}/auth/profile/`);

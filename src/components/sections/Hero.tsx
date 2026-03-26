@@ -1,13 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import Button from "../ui/Button";
+
+// Importer Swiper dynamiquement pour éviter les erreurs SSR
+const Swiper = dynamic(() => import('swiper/react').then(mod => mod.Swiper), { ssr: false });
+const SwiperSlide = dynamic(() => import('swiper/react').then(mod => mod.SwiperSlide), { ssr: false });
+
+// Importer les modules et les styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 
 const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
   ? 'http://127.0.0.1:8000/api'
   : 'https://backend-gold-iubc.onrender.com/api';
 
-// Composant compteur personnalisé
 function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);
 
@@ -33,6 +43,33 @@ function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; s
   return <>{count.toLocaleString()}{suffix}</>;
 }
 
+const slides = [
+  {
+    image: '/images/hero/agriculture.jpg',
+    title: 'Agriculture Durable',
+    description: 'Investissez dans des projets agricoles innovants qui transforment le continent',
+    badge: 'AgriTech'
+  },
+  {
+    image: '/images/hero/tech.jpg',
+    title: 'Innovation Technologique',
+    description: 'Soutenez les startups qui façonnent l\'Afrique de demain',
+    badge: 'Tech'
+  },
+  {
+    image: '/images/hero/energie.jpg',
+    title: 'Énergie Verte',
+    description: 'Participez à la transition énergétique africaine',
+    badge: 'Énergie'
+  },
+  {
+    image: '/images/hero/immobilier.jpg',
+    title: 'Immobilier Durable',
+    description: 'Investissez dans des projets immobiliers à fort impact social',
+    badge: 'Immobilier'
+  }
+];
+
 export default function Hero() {
   const [stats, setStats] = useState({
     projets: 0,
@@ -41,9 +78,13 @@ export default function Hero() {
     pays: 0
   });
   const [loading, setLoading] = useState(true);
+  const [animate, setAnimate] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     fetchStats();
+    setTimeout(() => setAnimate(true), 500);
   }, []);
 
   const fetchStats = async () => {
@@ -89,45 +130,98 @@ export default function Hero() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-bg via-bg to-green-900/20 overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-10" />
-      <div className="absolute top-20 left-10 w-72 h-72 bg-green-500/20 rounded-full blur-[100px]" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-green-600/10 rounded-full blur-[120px]" />
-
-      <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
-        <h1 className="text-5xl md:text-7xl font-playfair text-white mb-6 leading-tight">
-          Connecter les visionnaires
-          <br />
-          <span className="text-gold">aux capitaux</span>
-        </h1>
-
-        <p className="text-text-2 font-dm text-lg md:text-xl max-w-3xl mx-auto mb-12 leading-relaxed">
-          La plateforme qui met en relation porteurs de projets ambitieux et
-          investisseurs stratégiques à travers l'Afrique.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-5 justify-center mb-20">
-          <Button variant="gold" size="lg" className="px-8 py-4 text-lg hover:scale-105 transition-transform">
-            Déposer mon projet
-          </Button>
-          <Button variant="outline" size="lg" className="px-8 py-4 text-lg hover:scale-105 transition-transform border-green-500/50 hover:bg-green-500/10">
-            Explorer les projets
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-green-500/30 pt-12">
-          {statsList.map((stat, index) => (
-            <div key={index} className="text-center group">
-              <div className="text-4xl md:text-5xl font-playfair text-gold font-bold mb-2">
-                <AnimatedCounter end={stat.value} suffix={stat.suffix} />
+    <section className="relative min-h-screen overflow-hidden">
+      {/* Carrousel d'arrière-plan - seulement si monté côté client */}
+      {isMounted && Swiper && (
+        <Swiper
+          modules={[]}
+          effect="fade"
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          pagination={{ clickable: true, el: '.swiper-pagination-custom' }}
+          loop={true}
+          className="absolute inset-0 h-full w-full"
+        >
+          {slides.map((slide, index) => (
+            <SwiperSlide key={index}>
+              <div className="relative h-full w-full">
+                <div className="absolute inset-0 bg-black/60 z-10" />
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  className="object-cover"
+                  priority={index === 0}
+                  sizes="100vw"
+                />
               </div>
-              <div className="text-text-2 font-dm text-sm uppercase tracking-wider group-hover:text-gold transition-colors">
-                {stat.label}
-              </div>
-            </div>
+            </SwiperSlide>
           ))}
+        </Swiper>
+      )}
+
+      <div className="relative z-20 min-h-screen flex items-center justify-center">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <div className="mb-8">
+            <span className="inline-block px-4 py-1 bg-gold/20 text-gold rounded-full text-sm font-syne mb-4 backdrop-blur-sm">
+              🌍 Investissement stratégique en Afrique
+            </span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-playfair text-white mb-6 leading-tight">
+            Connecter les visionnaires
+            <br />
+            <span className="text-gold">aux capitaux</span>
+          </h1>
+
+          <p className="text-text-2 font-dm text-lg md:text-xl max-w-3xl mx-auto mb-12 leading-relaxed backdrop-blur-sm bg-black/20 px-4 py-2 rounded-xl">
+            La plateforme qui met en relation porteurs de projets ambitieux et
+            investisseurs stratégiques à travers l'Afrique.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-5 justify-center mb-20">
+            <Button variant="gold" size="lg" className="px-8 py-4 text-lg hover:scale-105 transition-transform">
+              Déposer mon projet
+            </Button>
+            <Button variant="outline" size="lg" className="px-8 py-4 text-lg hover:scale-105 transition-transform border-green-500/50 hover:bg-green-500/10">
+              Explorer les projets
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-green-500/30 pt-12 backdrop-blur-sm">
+            {statsList.map((stat, index) => (
+              <div key={index} className="text-center group">
+                <div className="text-4xl md:text-5xl font-playfair text-gold font-bold mb-2">
+                  {animate ? (
+                    <AnimatedCounter end={stat.value} suffix={stat.suffix} />
+                  ) : (
+                    `0${stat.suffix || ''}`
+                  )}
+                </div>
+                <div className="text-text-2 font-dm text-sm uppercase tracking-wider group-hover:text-gold transition-colors">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      <div className="swiper-pagination-custom absolute bottom-8 left-0 right-0 z-30 flex justify-center gap-3" />
+      
+      <style jsx>{`
+        :global(.swiper-pagination-custom .swiper-pagination-bullet) {
+          width: 10px;
+          height: 10px;
+          background: rgba(255,255,255,0.5);
+          opacity: 1;
+          transition: all 0.3s;
+        }
+        :global(.swiper-pagination-custom .swiper-pagination-bullet-active) {
+          background: #f0a500;
+          width: 24px;
+          border-radius: 5px;
+        }
+      `}</style>
     </section>
   );
 }

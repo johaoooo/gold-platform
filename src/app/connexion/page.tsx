@@ -104,11 +104,6 @@ export default function ConnexionPage() {
           </p>
           
           <div className="mt-6 pt-6 border-t border-surface-2">
-            <p className="text-xs text-text-3 text-center mb-2">Comptes de test :</p>
-            <div className="text-xs text-text-2 text-center space-y-1">
-              <p>📌 investisseur: invest_ouattara / invest123</p>
-              <p>📌 porteur: agritech_benin / porteur123</p>
-            </div>
           </div>
         </div>
       </div>

@@ -5,11 +5,7 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token')?.value;
   const { pathname } = request.nextUrl;
 
-  // Pages publiques
-  const publicPages = ['/connexion', '/inscription'];
-  const isPublicPage = publicPages.some((p) => pathname === p);
-  
-  // Pages protégées
+  // Pages protégées — dashboard uniquement
   const isProtected = pathname.startsWith('/dashboard');
 
   // Si pas de token et page protégée → rediriger vers connexion
@@ -17,12 +13,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/connexion', request.url));
   }
 
-  // Si token et page publique → NE PAS rediriger automatiquement
-  // L'utilisateur choisit de se déconnecter s'il le souhaite
-  
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/connexion', '/inscription'],
+  // /projets est volontairement ABSENT → accessible sans connexion
+  matcher: ['/dashboard/:path*'],
 };

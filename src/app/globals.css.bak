@@ -4,9 +4,9 @@
   --color-bg: #05090a;
   --color-surface: #0a120b;
   --color-surface-2: #0f1f10;
-  --color-gold: #22c55e;
-  --color-gold-light: #4ade80;
-  --color-gold-glow: #86efac;
+  --color-gold: #10b981;
+  --color-gold-light: #34d399;
+  --color-gold-glow: #6ee7b7;
   --color-text-1: #ffffff;
   --color-text-2: #8fa894;
   --font-playfair: var(--font-playfair), serif;
@@ -29,7 +29,7 @@ html, body {
 .title-gold {
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: bold;
-  background: linear-gradient(135deg, #22c55e, #4ade80);
+  background: linear-gradient(135deg, #f0a500, #ffd87a);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -39,7 +39,7 @@ html, body {
 .title-gold-gradient {
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: bold;
-  background: linear-gradient(90deg, #22c55e, #4ade80);
+  background: linear-gradient(90deg, #f0a500, #ffd87a);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -64,7 +64,7 @@ html, body {
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: 500;
   font-size: 1.5rem;
-  color: #22c55e;
+  color: #f0a500;
 }
 
 /* Style vert comme sur la page d'accueil */
