@@ -126,10 +126,15 @@ export async function createProject(payload: any) {
   return data;
 }
 
-export async function investInProject(payload: { projet_id: number; montant: number; message?: string }) {
-  const res = await authFetch(`${API_URL}/investments/create/`, {
+export async function createInvestment(projet_id: number, montant: number, message?: string) {
+  const token = getAccessToken();
+  const res = await fetch(`${API_URL}/investments/create/`, {
     method: 'POST',
-    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ projet_id, montant, message }),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(JSON.stringify(data));

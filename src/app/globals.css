@@ -88,3 +88,25 @@ html, body {
 .border-vert-accueil {
   border-color: #4ade80;
 }
+
+/* Mode clair */
+.light {
+  --color-bg: #ffffff;
+  --color-bg-2: #f8fafc;
+  --color-surface: #f1f5f9;
+  --color-surface-2: #e2e8f0;
+  --color-text: #0f172a;
+  --color-text-2: #334155;
+  --color-text-3: #475569;
+}
+
+.light .bg-bg { background-color: #ffffff; }
+.light .bg-bg-2 { background-color: #f8fafc; }
+.light .bg-surface { background-color: #f1f5f9; }
+.light .bg-surface-2 { background-color: #e2e8f0; }
+.light .text-text-2 { color: #334155; }
+.light .border-white\/10 { border-color: rgba(0,0,0,0.1); }
+.light .text-white { color: #0f172a; }
+.light .text-white\/80 { color: #334155; }
+.light .text-white\/60 { color: #475569; }
+.light .bg-black\/70 { background-color: rgba(255,255,255,0.9); }
