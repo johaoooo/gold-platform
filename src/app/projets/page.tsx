@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Globe, Monitor, Wheat, Building2, Zap,
@@ -23,21 +24,31 @@ interface Project {
 }
 
 const secteurs = [
-  { value: 'tous',        label: 'Tous',        icon: Globe      },
-  { value: 'tech',        label: 'Tech',        icon: Monitor    },
-  { value: 'agriculture', label: 'Agriculture', icon: Wheat      },
-  { value: 'immobilier',  label: 'Immobilier',  icon: Building2  },
-  { value: 'energie',     label: 'Énergie',     icon: Zap        },
+  { value: 'tous',        label: 'Tous',        icon: Globe     },
+  { value: 'tech',        label: 'Tech',        icon: Monitor   },
+  { value: 'agriculture', label: 'Agriculture', icon: Wheat     },
+  { value: 'immobilier',  label: 'Immobilier',  icon: Building2 },
+  { value: 'energie',     label: 'Énergie',     icon: Zap       },
 ];
 
-const getSecteurColor = (secteur: string) => {
-  const colors: Record<string, string> = {
-    tech:        'from-blue-500/10 to-blue-600/5 border-blue-500/20',
-    agriculture: 'from-green-400/10 to-green-600/5 border-vert-accueil/20',
-    immobilier:  'from-purple-500/10 to-purple-600/5 border-purple-500/20',
-    energie:     'from-green-400/10 to-green-600/5 border-vert-accueil/20',
+const getSecteurImage = (secteur: string) => {
+  const images: Record<string, string> = {
+    tech:        '/images/projects/tech.jpg',
+    agriculture: 'https://res.cloudinary.com/dzxesa3wi/image/upload/v1774566701/agriculture_lb5g2b.jpg',
+    immobilier:  'https://res.cloudinary.com/dzxesa3wi/image/upload/v1774566702/immobilier_ypcaur.jpg',
+    energie:     'https://res.cloudinary.com/dzxesa3wi/image/upload/v1774566701/energie_pivryt.jpg',
   };
-  return colors[secteur] || 'from-green-400/10 to-green-600/5 border-vert-accueil/20';
+  return images[secteur] || 'https://res.cloudinary.com/dzxesa3wi/image/upload/v1774566701/agriculture_lb5g2b.jpg';
+};
+
+const getSecteurStyle = (secteur: string) => {
+  const styles: Record<string, { border: string; badge: string; glow: string; accent: string }> = {
+    tech:        { border: 'border-blue-500/25 hover:border-blue-500/50',     badge: 'bg-blue-500/90',   glow: 'hover:shadow-blue-500/15',   accent: 'from-blue-900/40' },
+    agriculture: { border: 'border-green-500/25 hover:border-green-500/50',   badge: 'bg-green-500/90',  glow: 'hover:shadow-green-500/15',  accent: 'from-green-900/40' },
+    immobilier:  { border: 'border-purple-500/25 hover:border-purple-500/50', badge: 'bg-purple-500/90', glow: 'hover:shadow-purple-500/15', accent: 'from-purple-900/40' },
+    energie:     { border: 'border-yellow-500/25 hover:border-yellow-500/50', badge: 'bg-yellow-500/90', glow: 'hover:shadow-yellow-500/15', accent: 'from-yellow-900/40' },
+  };
+  return styles[secteur] || styles['agriculture'];
 };
 
 const formatMontant = (montant: number) =>
@@ -73,10 +84,7 @@ export default function ProjetsPage() {
   };
 
   const handleProposerProjet = () => {
-    if (!isLoggedIn) {
-      router.push('/connexion');
-      return;
-    }
+    if (!isLoggedIn) { router.push('/connexion'); return; }
     if (userRole === 'porteur') {
       router.push('/dashboard/porteur/nouveau-projet');
     } else {
@@ -104,12 +112,13 @@ export default function ProjetsPage() {
   return (
     <main className="min-h-screen bg-bg pt-32 pb-20">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
+
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
             Catalogue des <span className="text-vert-accueil">Projets</span>
           </h1>
           <p className="text-text-2 max-w-2xl mx-auto">
-            Explorez toutes les opportunités d'investissement vérifiées.
+            Explorez toutes les opportunités d&apos;investissement vérifiées.
           </p>
 
           {!isLoggedIn && (
@@ -149,82 +158,107 @@ export default function ProjetsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projetsFiltres.map((projet) => (
-              <div
-                key={projet.id}
-                className={`group bg-gradient-to-br ${getSecteurColor(projet.secteur)} rounded-2xl overflow-hidden border hover:shadow-xl hover:-translate-y-2 transition-all duration-500`}
-              >
-                <div className="relative h-44 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10" />
-                  <div
-                    className="w-full h-full bg-cover bg-center transform group-hover:scale-110 transition-transform duration-700"
-                    style={{ backgroundImage: `url(/images/projects/${projet.secteur.toLowerCase()}.jpg)` }}
-                  />
-                  <div className="absolute top-3 right-3 z-20">
-                    <span className="px-3 py-1 bg-vert-accueil/90 text-white text-[10px] font-syne font-bold rounded-full uppercase tracking-wider">
-                      {projet.secteur}
-                    </span>
-                  </div>
-                  <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1 text-white/70 text-xs">
-                    <MapPin size={12} />
-                    {projet.localisation}
-                  </div>
-                </div>
+            {projetsFiltres.map((projet) => {
+              const style = getSecteurStyle(projet.secteur.toLowerCase());
+              const pct = Math.min(projet.progression, 100);
 
-                <div className="p-5">
-                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-vert-accueil transition-colors" style={{ fontFamily: 'Georgia, serif' }}>
-                    {projet.titre}
-                  </h3>
-                  <p className="text-text-2 text-sm mb-4 line-clamp-2 leading-relaxed">
-                    {projet.description}
-                  </p>
+              return (
+                <div
+                  key={projet.id}
+                  className={`group bg-surface rounded-2xl overflow-hidden border transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${style.border} ${style.glow}`}
+                >
+                  <div className="relative h-44 overflow-hidden">
+                    <Image
+                      src={getSecteurImage(projet.secteur.toLowerCase())}
+                      alt={projet.titre}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${style.accent} to-transparent opacity-50 z-10`} />
 
-                  <div className="flex items-center justify-between text-sm mb-3">
-                    <span className="text-vert-accueil font-bold">{formatMontant(projet.montant_cible)}</span>
-                    <span className="flex items-center gap-1 text-text-2 text-xs">
-                      <TrendingUp size={12} className="text-vert-accueil" />
-                      {formatMontant(projet.montant_actuel)} collectés
-                    </span>
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="flex justify-between text-xs text-text-2 mb-1">
-                      <span>Progression</span>
-                      <span className="text-vert-accueil font-semibold">{projet.progression}%</span>
+                    <div className="absolute top-3 right-3 z-20">
+                      <span className={`${style.badge} text-white text-[10px] font-syne font-bold px-2.5 py-1 rounded-full uppercase tracking-widest backdrop-blur-sm`}>
+                        {projet.secteur}
+                      </span>
                     </div>
-                    <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden">
+
+                    <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1 text-white/80 text-xs bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full">
+                      <MapPin size={11} />
+                      {projet.localisation}
+                    </div>
+
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-20">
                       <div
-                        className="bg-gradient-to-r from-green-400 to-green-400 rounded-full h-1.5 transition-all duration-1000"
-                        style={{ width: `${Math.min(projet.progression, 100)}%` }}
+                        className="h-full bg-gradient-to-r from-green-500 to-emerald-400 transition-all duration-1000"
+                        style={{ width: `${pct}%` }}
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-xs text-text-2 mb-4">
-                    <User size={12} />
-                    <span>{projet.porteur}</span>
-                  </div>
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-white mb-2 group-hover:text-vert-accueil transition-colors leading-snug" style={{ fontFamily: 'Georgia, serif' }}>
+                      {projet.titre}
+                    </h3>
+                    <p className="text-text-2 text-sm mb-4 line-clamp-2 leading-relaxed">
+                      {projet.description}
+                    </p>
 
-                  {isLoggedIn ? (
-                    <Link href={`/projets/${projet.id}`}>
-                      <Button variant="outline" size="md" className="w-full group-hover:bg-vert-accueil group-hover:text-white transition-all duration-300">
-                        <span className="flex items-center justify-center gap-2">
-                          Voir le projet <ArrowRight size={14} />
-                        </span>
-                      </Button>
-                    </Link>
-                  ) : (
-                    <Link href="/connexion">
-                      <Button variant="outline" size="md" className="w-full hover:bg-vert-accueil hover:text-white transition-all duration-300">
-                        <span className="flex items-center justify-center gap-2">
-                          Connexion pour investir <ArrowRight size={14} />
-                        </span>
-                      </Button>
-                    </Link>
-                  )}
+                    <div className="flex items-end justify-between mb-3">
+                      <div>
+                        <p className="text-[10px] text-text-2 uppercase tracking-wider mb-0.5">Objectif</p>
+                        <p className="text-vert-accueil font-bold text-sm">{formatMontant(projet.montant_cible)}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] text-text-2 uppercase tracking-wider mb-0.5">Collecté</p>
+                        <p className="text-white font-semibold text-sm flex items-center gap-1 justify-end">
+                          <TrendingUp size={11} className="text-vert-accueil" />
+                          {formatMontant(projet.montant_actuel)}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <div className="flex justify-between text-xs text-text-2 mb-1.5">
+                        <span>Progression</span>
+                        <span className="text-vert-accueil font-semibold">{pct}%</span>
+                      </div>
+                      <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className="bg-gradient-to-r from-green-500 to-emerald-400 rounded-full h-1.5 transition-all duration-1000"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs text-text-2 mb-4 pb-4 border-b border-white/5">
+                      <div className="w-6 h-6 rounded-full bg-vert-accueil/15 flex items-center justify-center flex-shrink-0">
+                        <User size={11} className="text-vert-accueil" />
+                      </div>
+                      <span>{projet.porteur}</span>
+                    </div>
+
+                    {isLoggedIn ? (
+                      <Link href={`/projets/${projet.id}`}>
+                        <Button variant="outline" size="md" className="w-full group-hover:bg-vert-accueil group-hover:text-white group-hover:border-vert-accueil transition-all duration-300">
+                          <span className="flex items-center justify-center gap-2">
+                            Voir le projet <ArrowRight size={14} />
+                          </span>
+                        </Button>
+                      </Link>
+                    ) : (
+                      <Link href="/connexion">
+                        <Button variant="outline" size="md" className="w-full hover:bg-vert-accueil hover:text-white hover:border-vert-accueil transition-all duration-300">
+                          <span className="flex items-center justify-center gap-2">
+                            Connexion pour investir <ArrowRight size={14} />
+                          </span>
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -242,6 +276,7 @@ export default function ProjetsPage() {
             </p>
           )}
         </div>
+
       </div>
     </main>
   );

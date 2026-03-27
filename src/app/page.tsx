@@ -1,19 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { TrendingUp, Shield, Eye, ArrowRight } from 'lucide-react';
-
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <span className="text-2xl md:text-3xl font-bold text-gold" style={{ fontFamily: 'Georgia, serif' }}>
-        {value}
-      </span>
-      <span className="text-[10px] uppercase tracking-widest text-white/40 text-center">{label}</span>
-    </div>
-  );
-}
+import Hero from '@/components/sections/Hero';
 
 const expertise = [
   {
@@ -40,57 +29,7 @@ export default function Home() {
   return (
     <main className="flex flex-col font-sans bg-bg text-white overflow-x-hidden max-w-full">
 
-      {/* HERO */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 md:px-6 pt-20 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image src="/images/hero-bg.jpg" alt="Golden Invest" fill className="object-cover opacity-20" priority />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-bg" />
-        </div>
-
-        <div className="absolute inset-0 z-[1] opacity-[0.04]" style={{
-          backgroundImage: 'linear-gradient(var(--color-gold) 1px, transparent 1px), linear-gradient(90deg, var(--color-gold) 1px, transparent 1px)',
-          backgroundSize: '60px 60px'
-        }} />
-
-        <div className="relative z-10 flex flex-col items-center text-center w-full max-w-4xl mx-auto">
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-[1.15] tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>
-            L&apos;investissement{' '}
-            <span className="text-transparent bg-clip-text block sm:inline" style={{
-              backgroundImage: 'linear-gradient(90deg, #22c55e, #4ade80)'
-            }}>
-              stratégique
-            </span>
-            {' '}en Afrique
-          </h1>
-
-          <p className="mt-6 text-white/50 max-w-lg mx-auto text-sm md:text-lg leading-relaxed">
-            Golden Invest connecte les porteurs de projets innovants aux investisseurs visionnaires pour bâtir l&apos;économie de demain.
-          </p>
-
-          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center w-full max-w-xs sm:max-w-none mx-auto">
-            <Link href="/projets">
-              <button className="w-full sm:w-auto px-8 py-4 text-[12px] md:text-sm font-semibold uppercase tracking-wider rounded-full text-white transition-all duration-300 hover:scale-105 hover:opacity-90 flex items-center justify-center gap-2"
-                style={{ background: '#22c55e' }}>
-                Explorer les projets
-                <ArrowRight size={16} />
-              </button>
-            </Link>
-            <Link href="/inscription">
-              <button className="w-full sm:w-auto px-8 py-4 text-[12px] md:text-sm font-semibold uppercase tracking-wider rounded-full border border-white/10 text-white/70 hover:border-gold/40 hover:text-white transition-all duration-300">
-                Créer un compte
-              </button>
-            </Link>
-          </div>
-
-          {/* STATS */}
-          <div className="mt-16 md:mt-24 grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-6 md:gap-12 border-t border-white/5 pt-10 w-full">
-            <Stat value="120+" label="Projets financés" />
-            <Stat value="4,2 Mrd" label="FCFA investis" />
-            <Stat value="18%" label="Rendement moyen" />
-            <Stat value="98%" label="Taux de satisfaction" />
-          </div>
-        </div>
-      </section>
+      <Hero />
 
       {/* EXPERTISE */}
       <section className="py-20 md:py-28 px-4 md:px-6 border-t border-white/[0.04]">

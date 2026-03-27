@@ -20,24 +20,28 @@ export default function ConnexionPage() {
     try {
       const response = await fetch(`${API_URL}/auth/login/`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
+        // Vérifier si le compte est approuvé
+        if (data.user.role === 'investisseur' && data.user.is_approved === false) {
+          toast.error('Votre compte est en attente de validation par notre équipe (24-48h).');
+          setLoading(false);
+          return;
+        }
+
         localStorage.setItem('access_token', data.access);
         localStorage.setItem('refresh_token', data.refresh);
         localStorage.setItem('user', JSON.stringify(data.user));
-        
         document.cookie = `access_token=${data.access}; path=/; max-age=3600; SameSite=Lax`;
         document.cookie = `refresh_token=${data.refresh}; path=/; max-age=604800; SameSite=Lax`;
-        
+
         toast.success(`Bienvenue ${data.user.username} !`);
-        
+
         if (data.user.role === 'investisseur') {
           setTimeout(() => window.location.href = '/dashboard/investisseur', 500);
         } else if (data.user.role === 'porteur') {
@@ -46,9 +50,9 @@ export default function ConnexionPage() {
           setTimeout(() => window.location.href = '/', 500);
         }
       } else {
-        toast.error(data.error || 'Erreur de connexion');
+        toast.error(data.error || data.detail || 'Identifiants incorrects');
       }
-    } catch (err) {
+    } catch {
       toast.error('Impossible de se connecter au serveur');
     } finally {
       setLoading(false);
@@ -59,13 +63,12 @@ export default function ConnexionPage() {
     <div className="min-h-screen flex items-center justify-center bg-bg py-20">
       <div className="max-w-md w-full mx-auto px-6">
         <div className="bg-surface rounded-xl p-8 shadow-xl">
-          <h1 className="text-3xl font-playfair text-gold text-center mb-8">
-            Connexion
-          </h1>
-          
+          <h1 className="text-3xl font-playfair text-gold text-center mb-2">Connexion</h1>
+          <p className="text-center text-text-2 text-sm mb-8">Accédez à votre espace Golden Invest</p>
+
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-text-2 font-dm mb-2">Nom d'utilisateur</label>
+              <label className="block text-[10px] uppercase tracking-[0.2em] text-green-500 font-bold mb-1">Nom d'utilisateur</label>
               <input
                 type="text"
                 value={username}
@@ -74,9 +77,9 @@ export default function ConnexionPage() {
                 required
               />
             </div>
-            
+
             <div>
-              <label className="block text-text-2 font-dm mb-2">Mot de passe</label>
+              <label className="block text-[10px] uppercase tracking-[0.2em] text-green-500 font-bold mb-1">Mot de passe</label>
               <input
                 type="password"
                 value={password}
@@ -85,26 +88,16 @@ export default function ConnexionPage() {
                 required
               />
             </div>
-            
-            <Button
-              type="submit"
-              variant="gold"
-              className="w-full py-3"
-              disabled={loading}
-            >
+
+            <Button type="submit" variant="gold" className="w-full py-3" disabled={loading}>
               {loading ? 'Connexion...' : 'Se connecter'}
             </Button>
           </form>
-          
+
           <p className="text-center text-text-2 text-sm mt-6">
             Pas encore de compte ?{' '}
-            <a href="/inscription" className="text-gold hover:underline">
-              S'inscrire
-            </a>
+            <a href="/inscription" className="text-gold hover:underline">S'inscrire</a>
           </p>
-          
-          <div className="mt-6 pt-6 border-t border-surface-2">
-          </div>
         </div>
       </div>
     </div>

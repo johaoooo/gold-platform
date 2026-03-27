@@ -33,9 +33,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
   useEffect(() => {
@@ -44,15 +42,11 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
+  useEffect(() => { setIsOpen(false); }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   const handleLogout = () => {
@@ -63,21 +57,17 @@ export default function Navbar() {
     router.push('/');
   };
 
-  // On affiche toujours la navbar, même sur dashboard
-  // if (pathname.startsWith('/dashboard')) return null; // DÉSACTIVÉ
-
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-500 px-4 md:px-6 ${
-          isScrolled
-            ? 'bg-bg/95 backdrop-blur-2xl border-b border-gold/10 py-3 shadow-lg shadow-black/30'
-            : 'bg-transparent py-5'
-        }`}
-      >
+      <nav className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-500 px-4 md:px-6 ${
+        isScrolled
+          ? 'bg-bg/95 backdrop-blur-2xl border-b border-gold/10 py-3 shadow-lg shadow-black/30'
+          : 'bg-black/70 backdrop-blur-md py-5 border-b border-white/10'
+      }`}>
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <GoldenLogo />
 
+          {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-2">
             {navLinks.map((item) => (
               <Link
@@ -86,7 +76,7 @@ export default function Navbar() {
                 className={`text-[12px] font-syne uppercase tracking-[0.2em] px-5 py-2 rounded-full border transition-all duration-300 ${
                   pathname === item.href
                     ? 'text-bg bg-gold border-gold font-bold'
-                    : 'text-white/60 border-transparent hover:text-white hover:bg-gold/10 hover:border-gold/30'
+                    : 'text-white border-transparent hover:text-white hover:bg-gold/10 hover:border-gold/30'
                 }`}
               >
                 {item.label}
@@ -94,18 +84,25 @@ export default function Navbar() {
             ))}
           </div>
 
+          {/* Desktop auth */}
           <div className="hidden md:flex items-center gap-4">
             {user ? (
               <>
                 <Link
                   href={user.role === 'investisseur' ? '/dashboard/investisseur' : '/dashboard/porteur'}
-                  className="flex items-center gap-2 px-3 py-2 rounded-full bg-surface-2 border border-gold/20 hover:bg-gold/20 transition-all cursor-pointer"
+                  className="flex items-center gap-2 px-3 py-2 rounded-full bg-surface-2 border border-gold/20 hover:bg-gold/20 transition-all"
                 >
                   <User size={14} className="text-gold" />
                   <span className="text-xs font-dm text-white">{user.username}</span>
                   <span className="text-[10px] font-syne text-gold uppercase">
                     {user.role === 'investisseur' ? 'Invest' : 'Porteur'}
                   </span>
+                </Link>
+                <Link
+                  href="/profil"
+                  className="text-[12px] font-syne uppercase tracking-[0.2em] text-white hover:text-gold transition-all px-4 py-2 rounded-full border border-transparent hover:border-gold/20"
+                >
+                  Mon profil
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -119,7 +116,7 @@ export default function Navbar() {
               <>
                 <Link
                   href="/connexion"
-                  className="text-[12px] font-syne uppercase tracking-[0.2em] text-white/60 hover:text-white transition-all px-4 py-2 rounded-full border border-transparent hover:border-white/20"
+                  className="text-[12px] font-syne uppercase tracking-[0.2em] text-white hover:text-gold transition-all px-4 py-2 rounded-full border border-transparent hover:border-white/20"
                 >
                   Connexion
                 </Link>
@@ -133,11 +130,12 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* Mobile burger */}
           <div className="flex md:hidden items-center gap-2">
             {!user && (
               <Link
                 href="/connexion"
-                className="text-[11px] font-syne uppercase tracking-[0.2em] text-white/60 hover:text-white transition-all px-3 py-2 rounded-full border border-white/10 hover:border-white/30"
+                className="text-[11px] font-syne uppercase tracking-[0.2em] text-white hover:text-white transition-all px-3 py-2 rounded-full border border-white/10 hover:border-white/30"
               >
                 Connexion
               </Link>
@@ -145,7 +143,6 @@ export default function Navbar() {
             <button
               onClick={() => setIsOpen((prev) => !prev)}
               className="relative z-[110] text-white hover:text-gold transition-colors p-2 touch-manipulation"
-              aria-label={isOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -153,19 +150,13 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* Mobile menu */}
       {isOpen && (
         <div className="fixed inset-0 z-[100] bg-bg flex flex-col items-center justify-center gap-5 md:hidden">
-          <button
-            onClick={() => setIsOpen(false)}
-            className="absolute top-5 right-4 z-[110] text-white/50 hover:text-white transition-colors p-2 touch-manipulation"
-            aria-label="Fermer le menu"
-          >
+          <button onClick={() => setIsOpen(false)} className="absolute top-5 right-4 z-[110] text-white/50 hover:text-white p-2">
             <X size={28} />
           </button>
-
-          <div className="mb-4">
-            <GoldenLogo />
-          </div>
+          <div className="mb-4"><GoldenLogo /></div>
 
           {navLinks.map((item) => (
             <Link
@@ -197,11 +188,15 @@ export default function Navbar() {
                   {user.role === 'investisseur' ? 'Invest' : 'Porteur'}
                 </span>
               </Link>
+              <Link
+                href="/profil"
+                onClick={() => setIsOpen(false)}
+                className="text-sm font-syne uppercase tracking-[0.2em] text-white hover:text-gold transition py-2"
+              >
+                Mon profil
+              </Link>
               <button
-                onClick={() => {
-                  handleLogout();
-                  setIsOpen(false);
-                }}
+                onClick={() => { handleLogout(); setIsOpen(false); }}
                 className="flex items-center gap-2 text-sm font-syne uppercase tracking-[0.2em] text-white/60 hover:text-red-400 transition py-2"
               >
                 <LogOut size={16} />
@@ -210,18 +205,10 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link
-                href="/connexion"
-                onClick={() => setIsOpen(false)}
-                className="text-sm font-syne uppercase tracking-[0.2em] text-white/60 hover:text-white transition py-2"
-              >
+              <Link href="/connexion" onClick={() => setIsOpen(false)} className="text-sm font-syne uppercase tracking-[0.2em] text-white/60 hover:text-white transition py-2">
                 Connexion
               </Link>
-              <Link
-                href="/inscription"
-                onClick={() => setIsOpen(false)}
-                className="w-64 text-center px-10 py-4 text-[12px] font-syne font-bold uppercase tracking-wider rounded-full bg-gold text-bg hover:bg-gold-light transition-all"
-              >
+              <Link href="/inscription" onClick={() => setIsOpen(false)} className="w-64 text-center px-10 py-4 text-[12px] font-syne font-bold uppercase tracking-wider rounded-full bg-gold text-bg hover:bg-gold-light transition-all">
                 Commencer
               </Link>
             </>
