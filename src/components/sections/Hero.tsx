@@ -94,8 +94,8 @@ export default function Hero() {
     { value: stats.pays,         label: 'Pays couverts',      suffix: '' },
   ];
 
-  // Texte défilant avec visionnaire et innovateur
-  const marqueeWords = ['visionnaire', 'innovateur'];
+  // Texte défilant avec "visionnaires" et "innovateurs"
+  const marqueeText = "visionnaires ✦ innovateurs ✦ ";
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-black">
@@ -136,22 +136,15 @@ export default function Hero() {
               </span>
             </div>
 
-            {/* Titre */}
+            {/* Titre avec marquee */}
             <h1 className="text-4xl md:text-6xl font-black mb-4 leading-tight tracking-tight" style={{ fontFamily: 'Georgia, serif', fontWeight: 900 }}>
               <span className="text-green-500">Connecter les</span>
               <br />
-              <div className="relative overflow-hidden h-[1.1em] my-1 w-full">
-                <div className="absolute animate-marquee whitespace-nowrap">
-                  {marqueeWords.map((word, idx) => (
-                    <span key={idx} className={theme === 'dark' ? 'text-white' : 'text-green-500'}>
-                      {word}
-                      <span className={`mx-8 ${theme === 'dark' ? 'text-white/30' : 'text-green-500/30'}`}>✦</span>
-                    </span>
-                  ))}
-                  {marqueeWords.map((word, idx) => (
-                    <span key={`dup-${idx}`} className={theme === 'dark' ? 'text-white' : 'text-green-500'}>
-                      {word}
-                      <span className={`mx-8 ${theme === 'dark' ? 'text-white/30' : 'text-green-500/30'}`}>✦</span>
+              <div className="relative overflow-hidden h-[1.2em] my-2 w-full">
+                <div className="absolute whitespace-nowrap animate-marquee">
+                  {[...Array(6)].map((_, i) => (
+                    <span key={i} className={`inline-block text-3xl md:text-5xl font-black ${theme === 'dark' ? 'text-white' : 'text-green-500'}`} style={{ fontFamily: 'Georgia, serif' }}>
+                      {marqueeText}
                     </span>
                   ))}
                 </div>
@@ -244,11 +237,11 @@ export default function Hero() {
             transform: translateX(0%);
           }
           100% {
-            transform: translateX(-50%);
+            transform: translateX(-33.33%);
           }
         }
         .animate-marquee {
-          animation: marquee 10s linear infinite;
+          animation: marquee 12s linear infinite;
           display: inline-block;
         }
       `}</style>
