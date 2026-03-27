@@ -73,9 +73,9 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <GoldenLogo />
 
-          {/* Liens de navigation - centrés avec flex-1 pour occuper l'espace */}
+          {/* Desktop nav links */}
           <div className="hidden md:flex flex-1 justify-center ml-40">
-            <div className="flex items-center gap-16">
+            <div className="flex items-center gap-12">
               {navLinks.map((item) => (
                 <Link
                   key={item.href}
@@ -93,9 +93,8 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Actions à droite (thème, connexion, etc.) */}
+          {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-4">
-            {/* Bouton thème */}
             <button
               onClick={toggleTheme}
               className="flex items-center gap-1 text-[12px] font-black tracking-tight text-white/60 hover:text-green-500 transition-all px-3 py-2 rounded-full border border-transparent hover:border-white/20"
@@ -134,7 +133,7 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <>
+              <div className="flex items-center gap-3">
                 <Link
                   href="/connexion"
                   className="text-[14px] font-black tracking-tight text-white hover:text-green-500 transition-all"
@@ -144,36 +143,26 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/inscription"
-                  className="px-6 py-2.5 text-[11px] font-black uppercase tracking-wider rounded-full bg-gold text-bg hover:bg-gold-light transition-all"
+                  className="px-6 py-2.5 text-[11px] font-black uppercase tracking-wider rounded-full bg-green-500 text-white hover:bg-green-600 transition-all"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Commencer
                 </Link>
-              </>
+              </div>
             )}
           </div>
 
-          {/* Mobile */}
+          {/* Mobile burger */}
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="text-[11px] font-black tracking-tight text-white/60 hover:text-green-500 transition-all px-3 py-2 rounded-full border border-white/10 hover:border-white/30"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="p-2 rounded-full hover:bg-white/10 transition-all"
             >
-              {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+              {theme === 'dark' ? <Sun size={18} className="text-yellow-500" /> : <Moon size={18} className="text-slate-700" />}
             </button>
-            {!user && (
-              <Link
-                href="/connexion"
-                className="text-[11px] font-black tracking-tight text-white hover:text-green-500 transition-all px-3 py-2 rounded-full border border-white/10 hover:border-white/30"
-                style={{ fontFamily: 'Georgia, serif' }}
-              >
-                Connexion
-              </Link>
-            )}
             <button
               onClick={() => setIsOpen((prev) => !prev)}
-              className="relative z-[110] text-white hover:text-green-500 transition-colors p-2 touch-manipulation"
+              className="relative z-[110] text-white hover:text-green-500 transition-colors p-2"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -183,7 +172,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] bg-bg flex flex-col items-center justify-center ml-40 gap-5 md:hidden">
+        <div className={`fixed inset-0 z-[100] ${theme === 'dark' ? 'bg-bg' : 'bg-white'} flex flex-col items-center justify-center gap-5 md:hidden overflow-y-auto py-12`}>
           <button onClick={() => setIsOpen(false)} className="absolute top-5 right-4 z-[110] text-white/50 hover:text-white p-2">
             <X size={28} />
           </button>
@@ -191,11 +180,11 @@ export default function Navbar() {
 
           <button
             onClick={toggleTheme}
-            className="flex items-center gap-2 px-5 py-3 rounded-full bg-surface-2 border border-gold/20 hover:bg-gold/20 transition-all"
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all text-sm ${theme === 'dark' ? 'bg-surface-2 border-gold/20' : 'bg-gray-100 border-gray-300'}`}
             style={{ fontFamily: 'Georgia, serif' }}
           >
-            {theme === 'dark' ? <Sun size={16} className="text-gold" /> : <Moon size={16} className="text-gold" />}
-            <span className="text-white font-black">{theme === 'dark' ? 'Mode clair' : 'Mode sombre'}</span>
+            {theme === 'dark' ? <Sun size={16} className="text-yellow-500" /> : <Moon size={16} className="text-slate-700" />}
+            <span className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>{theme === 'dark' ? 'Mode clair' : 'Mode sombre'}</span>
           </button>
 
           {navLinks.map((item) => (
@@ -203,10 +192,10 @@ export default function Navbar() {
               key={item.href}
               href={item.href}
               onClick={() => setIsOpen(false)}
-              className={`text-2xl font-black tracking-tight transition-all duration-300 ${
+              className={`text-xl font-black tracking-tight transition-all duration-300 ${
                 pathname === item.href
                   ? 'text-green-500'
-                  : 'text-white/70 hover:text-green-500'
+                  : theme === 'dark' ? 'text-white/80 hover:text-green-500' : 'text-gray-800 hover:text-green-500'
               }`}
               style={{ fontFamily: 'Georgia, serif' }}
             >
@@ -214,47 +203,60 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <div className="w-48 h-px bg-white/10 my-2" />
+          <div className={`w-40 h-px ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-300'} my-2`} />
 
           {user ? (
             <>
               <Link
                 href={user.role === 'investisseur' ? '/dashboard/investisseur' : '/dashboard/porteur'}
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-2 px-5 py-3 rounded-full bg-surface-2 border border-gold/20 hover:bg-gold/20 transition-all"
+                className={`flex items-center gap-2 px-5 py-3 rounded-full border transition-all ${theme === 'dark' ? 'bg-surface-2 border-gold/20' : 'bg-gray-100 border-gray-300'}`}
                 style={{ fontFamily: 'Georgia, serif' }}
               >
-                <User size={16} className="text-gold" />
-                <span className="text-sm text-white font-black">{user.username}</span>
-                <span className="text-[10px] text-gold uppercase font-black">
-                  {user.role === 'investisseur' ? 'Invest' : 'Porteur'}
-                </span>
+                <User size={18} className="text-gold" />
+                <span className={`text-lg font-black ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>{user.username}</span>
               </Link>
               <Link
                 href="/profil"
                 onClick={() => setIsOpen(false)}
-                className="text-xl font-black tracking-tight text-white/70 hover:text-green-500 transition py-2"
+                className={`text-xl font-black tracking-tight transition-all duration-300 ${theme === 'dark' ? 'text-white/70 hover:text-green-500' : 'text-gray-700 hover:text-green-500'}`}
                 style={{ fontFamily: 'Georgia, serif' }}
               >
                 Mon profil
               </Link>
               <button
                 onClick={() => { handleLogout(); setIsOpen(false); }}
-                className="text-xl font-black tracking-tight text-white/60 hover:text-red-400 transition py-2"
+                className={`text-xl font-black tracking-tight transition-all duration-300 ${theme === 'dark' ? 'text-white/60 hover:text-red-400' : 'text-gray-600 hover:text-red-500'}`}
                 style={{ fontFamily: 'Georgia, serif' }}
               >
                 Déconnexion
               </button>
             </>
           ) : (
-            <>
-              <Link href="/connexion" onClick={() => setIsOpen(false)} className="text-xl font-black tracking-tight text-white/70 hover:text-green-500 transition py-2" style={{ fontFamily: 'Georgia, serif' }}>
+            <div className="flex flex-col gap-3 items-center">
+              <Link
+                href="/connexion"
+                onClick={() => setIsOpen(false)}
+                className={`text-xl font-black tracking-tight transition-all duration-300 ${
+                  theme === 'dark' ? 'text-white/80 hover:text-green-500' : 'text-gray-800 hover:text-green-500'
+                }`}
+                style={{ fontFamily: 'Georgia, serif' }}
+              >
                 Connexion
               </Link>
-              <Link href="/inscription" onClick={() => setIsOpen(false)} className="w-64 text-center px-10 py-4 text-[12px] font-black uppercase tracking-wider rounded-full bg-gold text-bg hover:bg-gold-light transition-all" style={{ fontFamily: 'Georgia, serif' }}>
+              <Link
+                href="/inscription"
+                onClick={() => setIsOpen(false)}
+                className={`px-8 py-3 text-[13px] font-black uppercase tracking-wider rounded-full transition-all ${
+                  theme === 'dark' 
+                    ? 'bg-gold text-bg hover:bg-gold-light' 
+                    : 'bg-green-500 text-white hover:bg-green-600'
+                }`}
+                style={{ fontFamily: 'Georgia, serif' }}
+              >
                 Commencer
               </Link>
-            </>
+            </div>
           )}
         </div>
       )}
