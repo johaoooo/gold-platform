@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Twitter, Linkedin, Instagram, MessageCircle, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { Twitter, Linkedin, Instagram, MessageCircle, Mail, Phone, MapPin } from 'lucide-react';
 import Button from './Button';
 
 function GoldenLogo() {
@@ -95,7 +95,7 @@ export default function Footer() {
               </h4>
               <ul className="space-y-3">
                 {section.links.map((link) => {
-                  const Icon = link.icon;
+                  const Icon = 'icon' in link ? link.icon : null;
                   return (
                     <li key={link.label}>
                       <Link
