@@ -94,6 +94,9 @@ export default function Hero() {
     { value: stats.pays,         label: 'Pays couverts',      suffix: '' },
   ];
 
+  // Texte défilant avec visionnaire et innovateur
+  const marqueeWords = ['visionnaire', 'innovateur'];
+
   return (
     <section className="relative min-h-screen overflow-hidden bg-black">
 
@@ -124,26 +127,33 @@ export default function Hero() {
       </div>
 
       {/* Contenu */}
-      <div className="relative z-20 min-h-screen flex flex-col justify-between py-12">
+      <div className="relative z-20 min-h-screen flex flex-col justify-between py-12 pt-28">
         <div className="flex-1 flex items-center justify-center">
           <div className="max-w-5xl mx-auto px-6 text-center">
-            <div className="mb-4">
+            <div className="mb-4 mt-8">
               <span key={current} className="inline-block px-3 py-1 bg-green-500/20 text-green-500 rounded-full text-xs font-syne backdrop-blur-sm transition-all duration-500">
                 {slides[current].badge}
               </span>
             </div>
 
-            {/* Titre avec taille augmentée et "aux capitaux" rapproché */}
+            {/* Titre */}
             <h1 className="text-4xl md:text-6xl font-black mb-4 leading-tight tracking-tight" style={{ fontFamily: 'Georgia, serif', fontWeight: 900 }}>
               <span className="text-green-500">Connecter les</span>
               <br />
-              <div className="relative overflow-hidden h-[1.1em] my-1">
+              <div className="relative overflow-hidden h-[1.1em] my-1 w-full">
                 <div className="absolute animate-marquee whitespace-nowrap">
-                  <span className={theme === 'dark' ? 'text-white' : 'text-green-500'}>visionnaires</span>
-                  <span className={`mx-6 ${theme === 'dark' ? 'text-white/30' : 'text-green-500/30'}`}>✦</span>
-                  <span className={theme === 'dark' ? 'text-white' : 'text-green-500'}>visionnaires</span>
-                  <span className={`mx-6 ${theme === 'dark' ? 'text-white/30' : 'text-green-500/30'}`}>✦</span>
-                  <span className={theme === 'dark' ? 'text-white' : 'text-green-500'}>visionnaires</span>
+                  {marqueeWords.map((word, idx) => (
+                    <span key={idx} className={theme === 'dark' ? 'text-white' : 'text-green-500'}>
+                      {word}
+                      <span className={`mx-8 ${theme === 'dark' ? 'text-white/30' : 'text-green-500/30'}`}>✦</span>
+                    </span>
+                  ))}
+                  {marqueeWords.map((word, idx) => (
+                    <span key={`dup-${idx}`} className={theme === 'dark' ? 'text-white' : 'text-green-500'}>
+                      {word}
+                      <span className={`mx-8 ${theme === 'dark' ? 'text-white/30' : 'text-green-500/30'}`}>✦</span>
+                    </span>
+                  ))}
                 </div>
               </div>
               <span className="text-green-500 inline-block mt-1">aux capitaux</span>
@@ -238,7 +248,7 @@ export default function Hero() {
           }
         }
         .animate-marquee {
-          animation: marquee 8s linear infinite;
+          animation: marquee 10s linear infinite;
           display: inline-block;
         }
       `}</style>
