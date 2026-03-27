@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
-import Button from "../ui/Button";
 
 const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
   ? 'http://127.0.0.1:8000/api'
@@ -123,63 +122,63 @@ export default function Hero() {
       </div>
 
       {/* Contenu */}
-      <div className="relative z-20 min-h-screen flex items-center justify-center pb-32 pt-24">
-        <div className="max-w-6xl mx-auto px-6 text-center">
+      <div className="relative z-20 min-h-screen flex flex-col justify-between py-16">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="max-w-6xl mx-auto px-6 text-center">
+            {/* Badge */}
+            <div className="mb-6">
+              <span key={current} className="inline-block px-4 py-1 bg-green-500/20 text-green-500 rounded-full text-sm font-syne backdrop-blur-sm transition-all duration-500">
+                {slides[current].badge}
+              </span>
+            </div>
 
-          {/* Badge */}
-          <div className="mb-6">
-            <span key={current} className="inline-block px-4 py-1 bg-green-500/20 text-green-500 rounded-full text-sm font-syne backdrop-blur-sm transition-all duration-500">
-              {slides[current].badge}
-            </span>
-          </div>
+            {/* Titre */}
+            <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight tracking-tight" style={{ fontFamily: 'Georgia, serif', fontWeight: 900 }}>
+              Connecter les visionnaires
+              <br />
+              <span className="text-green-500">aux capitaux</span>
+            </h1>
 
-          {/* Titre */}
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight tracking-tight" style={{ fontFamily: 'Georgia, serif', fontWeight: 900 }}>
-            Connecter les visionnaires
-            <br />
-            <span className="text-green-500">aux capitaux</span>
-          </h1>
+            {/* Description */}
+            <div className="h-auto min-h-[80px] flex items-center justify-center mb-10">
+              <p key={current} className="text-text-2 font-dm text-lg md:text-xl max-w-2xl mx-auto leading-relaxed backdrop-blur-sm bg-black/20 px-4 py-2 rounded-xl transition-all duration-500">
+                {slides[current].description}
+              </p>
+            </div>
 
-          {/* Description */}
-          <div className="h-auto min-h-[80px] flex items-center justify-center mb-10">
-            <p key={current} className="text-text-2 font-dm text-lg md:text-xl max-w-2xl mx-auto leading-relaxed backdrop-blur-sm bg-black/20 px-4 py-2 rounded-xl transition-all duration-500">
-              {slides[current].description}
-            </p>
-          </div>
-
-          {/* Boutons */}
-          <div className="flex flex-col sm:flex-row gap-5 justify-center mb-20">
-            <Link href="/deposer">
-              <button className="group relative px-8 py-4 text-base font-bold uppercase tracking-wider rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
-                <span className="absolute inset-0 bg-green-500" />
-                <span className="relative flex items-center gap-2 text-white z-10">
+            {/* Boutons */}
+            <div className="flex flex-col sm:flex-row gap-5 justify-center mb-12">
+              <Link href="/deposer">
+                <button className="group px-8 py-4 text-base font-bold uppercase tracking-wider rounded-full bg-green-500 text-white hover:bg-green-600 transition-all duration-300 hover:scale-105 flex items-center gap-2">
                   Déposer mon projet
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </span>
-              </button>
-            </Link>
-            <Link href="/projets">
-              <button className="group px-8 py-4 text-base font-bold uppercase tracking-wider rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white transition-all duration-300 hover:scale-105">
-                <span className="flex items-center gap-2">
+                </button>
+              </Link>
+              <Link href="/projets">
+                <button className="group px-8 py-4 text-base font-bold uppercase tracking-wider rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white transition-all duration-300 hover:scale-105 flex items-center gap-2">
                   Explorer les projets
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </span>
-              </button>
-            </Link>
+                </button>
+              </Link>
+            </div>
           </div>
+        </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-green-500/30 pt-12">
-            {statsList.map((stat, index) => (
-              <div key={index} className="text-center group">
-                <div className="text-4xl md:text-5xl font-playfair text-green-500 font-bold mb-2">
-                  {animate ? <AnimatedCounter end={stat.value} suffix={stat.suffix} /> : `0${stat.suffix}`}
+        {/* Stats - Toujours visibles en bas */}
+        <div className="relative z-20 w-full">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-8 border-t border-green-500/30">
+              {statsList.map((stat, index) => (
+                <div key={index} className="text-center group">
+                  <div className="text-3xl md:text-4xl font-black text-green-500 mb-1" style={{ fontFamily: 'Georgia, serif' }}>
+                    {animate ? <AnimatedCounter end={stat.value} suffix={stat.suffix} /> : `0${stat.suffix}`}
+                  </div>
+                  <div className="text-text-2 font-dm text-xs uppercase tracking-wider group-hover:text-green-500 transition-colors">
+                    {stat.label}
+                  </div>
                 </div>
-                <div className="text-text-2 font-dm text-sm uppercase tracking-wider group-hover:text-green-500 transition-colors">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -188,14 +187,12 @@ export default function Hero() {
       <button
         onClick={() => goTo(current - 1)}
         className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-green-500/80 hover:border-green-500 transition-all duration-300"
-        aria-label="Slide précédent"
       >
         <ChevronLeft size={20} />
       </button>
       <button
         onClick={() => goTo(current + 1)}
         className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-green-500/80 hover:border-green-500 transition-all duration-300"
-        aria-label="Slide suivant"
       >
         <ChevronRight size={20} />
       </button>
@@ -214,17 +211,9 @@ export default function Hero() {
               transition: 'all 0.3s ease',
               cursor: 'pointer',
             }}
-            aria-label={`Aller à la slide ${i + 1}`}
           />
         ))}
       </div>
-
-      <style jsx>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </section>
   );
 }
