@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
   ? 'http://127.0.0.1:8000/api'
@@ -54,6 +55,7 @@ function AnimatedCounter({ end, suffix = '', duration = 2000 }: { end: number; s
 }
 
 export default function Hero() {
+  const { theme } = useTheme();
   const [current, setCurrent] = useState(0);
   const [stats, setStats] = useState({ projets: 240, capitaux: 4.2, satisfaction: 98, pays: 6 });
   const [animate, setAnimate] = useState(false);
@@ -122,58 +124,69 @@ export default function Hero() {
       </div>
 
       {/* Contenu */}
-      <div className="relative z-20 min-h-screen flex flex-col justify-between py-16">
+      <div className="relative z-20 min-h-screen flex flex-col justify-between py-12">
         <div className="flex-1 flex items-center justify-center">
-          <div className="max-w-6xl mx-auto px-6 text-center">
-            {/* Badge */}
-            <div className="mb-6">
-              <span key={current} className="inline-block px-4 py-1 bg-green-500/20 text-green-500 rounded-full text-sm font-syne backdrop-blur-sm transition-all duration-500">
+          <div className="max-w-5xl mx-auto px-6 text-center">
+            <div className="mb-4">
+              <span key={current} className="inline-block px-3 py-1 bg-green-500/20 text-green-500 rounded-full text-xs font-syne backdrop-blur-sm transition-all duration-500">
                 {slides[current].badge}
               </span>
             </div>
 
-            {/* Titre */}
-            <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight tracking-tight" style={{ fontFamily: 'Georgia, serif', fontWeight: 900 }}>
-              Connecter les visionnaires
+            {/* Titre avec taille augmentée et "aux capitaux" rapproché */}
+            <h1 className="text-4xl md:text-6xl font-black mb-4 leading-tight tracking-tight" style={{ fontFamily: 'Georgia, serif', fontWeight: 900 }}>
+              <span className="text-green-500">Connecter les</span>
               <br />
-              <span className="text-green-500">aux capitaux</span>
+              <div className="relative overflow-hidden h-[1.1em] my-1">
+                <div className="absolute animate-marquee whitespace-nowrap">
+                  <span className={theme === 'dark' ? 'text-white' : 'text-green-500'}>visionnaires</span>
+                  <span className={`mx-6 ${theme === 'dark' ? 'text-white/30' : 'text-green-500/30'}`}>✦</span>
+                  <span className={theme === 'dark' ? 'text-white' : 'text-green-500'}>visionnaires</span>
+                  <span className={`mx-6 ${theme === 'dark' ? 'text-white/30' : 'text-green-500/30'}`}>✦</span>
+                  <span className={theme === 'dark' ? 'text-white' : 'text-green-500'}>visionnaires</span>
+                </div>
+              </div>
+              <span className="text-green-500 inline-block mt-1">aux capitaux</span>
             </h1>
 
-            {/* Description */}
-            <div className="h-auto min-h-[80px] flex items-center justify-center mb-10">
-              <p key={current} className="text-text-2 font-dm text-lg md:text-xl max-w-2xl mx-auto leading-relaxed backdrop-blur-sm bg-black/20 px-4 py-2 rounded-xl transition-all duration-500">
+            <div className="h-auto min-h-[60px] flex items-center justify-center mb-6">
+              <p key={current} className="text-text-2 font-dm text-sm md:text-base max-w-2xl mx-auto leading-relaxed backdrop-blur-sm bg-black/20 px-4 py-2 rounded-xl transition-all duration-500">
                 {slides[current].description}
               </p>
             </div>
 
             {/* Boutons */}
-            <div className="flex flex-col sm:flex-row gap-5 justify-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
               <Link href="/deposer">
-                <button className="group px-8 py-4 text-base font-bold uppercase tracking-wider rounded-full bg-green-500 text-white hover:bg-green-600 transition-all duration-300 hover:scale-105 flex items-center gap-2">
+                <button className={`group px-7 py-3.5 text-sm font-bold uppercase tracking-wider rounded-full transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
+                  theme === 'dark' 
+                    ? 'bg-white text-black hover:bg-white/90' 
+                    : 'bg-green-500 text-white hover:bg-green-600'
+                }`}>
                   Déposer mon projet
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
               <Link href="/projets">
-                <button className="group px-8 py-4 text-base font-bold uppercase tracking-wider rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white transition-all duration-300 hover:scale-105 flex items-center gap-2">
+                <button className="group px-7 py-3.5 text-sm font-bold uppercase tracking-wider rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white transition-all duration-300 hover:scale-105 flex items-center gap-2">
                   Explorer les projets
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Stats - Toujours visibles en bas */}
+        {/* Stats */}
         <div className="relative z-20 w-full">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-8 border-t border-green-500/30">
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-6 border-t border-green-500/30">
               {statsList.map((stat, index) => (
                 <div key={index} className="text-center group">
-                  <div className="text-3xl md:text-4xl font-black text-green-500 mb-1" style={{ fontFamily: 'Georgia, serif' }}>
+                  <div className={`text-2xl md:text-3xl font-black mb-1 ${theme === 'dark' ? 'text-white' : 'text-green-500'}`} style={{ fontFamily: 'Georgia, serif' }}>
                     {animate ? <AnimatedCounter end={stat.value} suffix={stat.suffix} /> : `0${stat.suffix}`}
                   </div>
-                  <div className="text-text-2 font-dm text-xs uppercase tracking-wider group-hover:text-green-500 transition-colors">
+                  <div className="text-text-2 font-dm text-[10px] uppercase tracking-wider group-hover:text-green-500 transition-colors">
                     {stat.label}
                   </div>
                 </div>
@@ -183,30 +196,30 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Flèches de navigation */}
+      {/* Flèches */}
       <button
         onClick={() => goTo(current - 1)}
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-green-500/80 hover:border-green-500 transition-all duration-300"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-green-500/80 hover:border-green-500 transition-all duration-300"
       >
-        <ChevronLeft size={20} />
+        <ChevronLeft size={18} />
       </button>
       <button
         onClick={() => goTo(current + 1)}
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-green-500/80 hover:border-green-500 transition-all duration-300"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-green-500/80 hover:border-green-500 transition-all duration-300"
       >
-        <ChevronRight size={20} />
+        <ChevronRight size={18} />
       </button>
 
       {/* Indicateurs */}
-      <div className="absolute bottom-8 left-0 right-0 z-30 flex justify-center gap-2">
+      <div className="absolute bottom-4 left-0 right-0 z-30 flex justify-center gap-2">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
             style={{
-              height: '8px',
-              width: i === current ? '32px' : '8px',
-              borderRadius: '4px',
+              height: '6px',
+              width: i === current ? '24px' : '6px',
+              borderRadius: '3px',
               background: i === current ? '#22c55e' : 'rgba(255,255,255,0.4)',
               transition: 'all 0.3s ease',
               cursor: 'pointer',
@@ -214,6 +227,21 @@ export default function Hero() {
           />
         ))}
       </div>
+
+      <style jsx>{`
+        @keyframes marquee {
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-marquee {
+          animation: marquee 8s linear infinite;
+          display: inline-block;
+        }
+      `}</style>
     </section>
   );
 }
