@@ -1,146 +1,169 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-interface Step {
-  text: string;
-  completed: boolean;
-  active: boolean;
-}
+import { 
+  Network, Users, FolderSync, TrendingUp, Shield, Sparkles,
+  CheckCircle, Loader2, Circle
+} from 'lucide-react';
 
 export default function TerminalLoader({ onComplete }: { onComplete: () => void }) {
-  const [steps, setSteps] = useState<Step[]>([
-    { text: 'Connexion au réseau', completed: false, active: false },
-    { text: 'Chargement des investisseurs', completed: false, active: false },
-    { text: 'Synchronisation des projets', completed: false, active: false },
-    { text: 'Préparation de l\'interface', completed: false, active: false },
-    { text: 'Sécurisation des données', completed: false, active: false },
-  ]);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [allComplete, setAllComplete] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [progress, setProgress] = useState(0);
+
+  const steps = [
+    { label: 'Connexion au réseau', icon: Network, time: 400 },
+    { label: 'Chargement des investisseurs', icon: Users, time: 500 },
+    { label: 'Synchronisation des projets', icon: FolderSync, time: 450 },
+    { label: 'Analyse des rendements', icon: TrendingUp, time: 400 },
+    { label: 'Sécurisation des transactions', icon: Shield, time: 450 },
+    { label: 'Initialisation de l\'interface', icon: Sparkles, time: 500 },
+  ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (currentStep < steps.length) {
-        // Activer l'étape en cours
-        setSteps(prev => prev.map((step, idx) => ({
-          ...step,
-          active: idx === currentStep
-        })));
-        
-        // Marquer l'étape comme complétée après un délai
-        setTimeout(() => {
-          setSteps(prev => prev.map((step, idx) => ({
-            ...step,
-            completed: idx === currentStep ? true : step.completed,
-            active: false
-          })));
-          setCurrentStep(prev => prev + 1);
-        }, 600);
-      } else {
-        clearInterval(interval);
-        setAllComplete(true);
+    let timer: NodeJS.Timeout;
+    let progressInterval: NodeJS.Timeout;
+
+    const runStep = (index: number) => {
+      if (index >= steps.length) {
         setTimeout(() => {
           onComplete();
-        }, 800);
+        }, 600);
+        return;
       }
-    }, 800);
 
-    return () => clearInterval(interval);
-  }, [currentStep, steps.length, onComplete]);
+      setActiveStep(index);
+      
+      let currentProgress = 0;
+      progressInterval = setInterval(() => {
+        currentProgress += 2;
+        if (currentProgress <= 100) {
+          setProgress(currentProgress);
+        } else {
+          clearInterval(progressInterval);
+        }
+      }, steps[index].time / 50);
+
+      timer = setTimeout(() => {
+        setCompletedSteps(prev => [...prev, index]);
+        setProgress(0);
+        runStep(index + 1);
+      }, steps[index].time);
+    };
+
+    runStep(0);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(progressInterval);
+    };
+  }, [steps.length, onComplete]);
+
+  const getIcon = (Icon: React.ElementType, isCompleted: boolean, isActive: boolean) => {
+    if (isCompleted) {
+      return <CheckCircle size={16} className="text-green-500" />;
+    }
+    if (isActive) {
+      return <Loader2 size={16} className="text-green-500 animate-spin" />;
+    }
+    return <Icon size={16} className="text-gray-600" />;
+  };
 
   return (
-    <div className="fixed inset-0 z-[200] bg-bg flex items-center justify-center">
-      <div className="w-full max-w-md mx-auto px-6">
-        {/* Logo animé */}
-        <div className="text-center mb-12">
-          <div className="relative inline-block">
-            <div className="text-4xl font-black tracking-wider text-green-500" style={{ fontFamily: 'Georgia, serif' }}>
-              GOLDEN
-            </div>
-            <div className="text-sm tracking-[0.3em] text-green-400/60 mt-1">INVEST</div>
-            <div className="absolute -inset-4 bg-green-500/5 blur-xl rounded-full animate-pulse" />
-          </div>
-        </div>
-
-        {/* Liste des étapes */}
-        <div className="space-y-4">
-          {steps.map((step, idx) => (
-            <div key={idx} className="flex items-center gap-4">
-              {/* Icône d'état */}
-              <div className="w-6 h-6 flex items-center justify-center">
-                {step.completed ? (
-                  <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center animate-scaleIn">
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                ) : step.active ? (
-                  <div className="w-5 h-5 rounded-full border-2 border-green-500 border-t-transparent animate-spin" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border-2 border-green-500/20" />
-                )}
+    <div className="fixed inset-0 z-[200] bg-gradient-to-br from-[#0a0c10] to-[#050708] flex items-center justify-center">
+      <div className="w-full max-w-lg mx-auto px-6">
+        <div className="relative">
+          <div className="absolute -inset-1 bg-green-500/5 blur-xl rounded-3xl" />
+          
+          <div className="relative bg-[#0a0c10]/90 backdrop-blur-sm border border-green-500/20 rounded-2xl overflow-hidden shadow-2xl">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-3 bg-black/40 border-b border-green-500/20">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                <div className="w-3 h-3 rounded-full bg-green-500/80" />
               </div>
-              
-              {/* Texte de l'étape */}
-              <span className={`
-                text-sm font-mono transition-all duration-300
-                ${step.completed ? 'text-green-400' : ''}
-                ${step.active ? 'text-green-500 font-semibold' : 'text-text-2'}
-                ${!step.completed && !step.active ? 'text-text-2/50' : ''}
-              `}>
-                {step.text}
-              </span>
+              <div className="text-green-500/40 text-[11px] font-mono tracking-wide">
+                golden-invest@launcher:~
+              </div>
+              <div className="w-14" />
             </div>
-          ))}
-        </div>
 
-        {/* Message final */}
-        {allComplete && (
-          <div className="mt-8 text-center animate-fadeInUp">
-            <div className="text-green-500 text-sm font-mono">✓ Prêt à investir</div>
-          </div>
-        )}
+            {/* Body */}
+            <div className="p-6">
+              {/* Logo */}
+              <div className="text-center mb-8">
+                <div className="relative inline-block">
+                  <div className="text-3xl font-black tracking-wider text-green-500" style={{ fontFamily: 'Georgia, serif' }}>
+                    GOLDEN
+                  </div>
+                  <div className="text-[10px] tracking-[0.3em] text-green-400/50 mt-0.5">INVEST</div>
+                  <div className="absolute -inset-3 bg-green-500/10 blur-xl rounded-full animate-pulse" />
+                </div>
+              </div>
 
-        {/* Progress bar */}
-        <div className="mt-8">
-          <div className="h-0.5 bg-green-500/10 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all duration-300"
-              style={{ width: `${((currentStep) / steps.length) * 100}%` }}
-            />
+              {/* Steps */}
+              <div className="space-y-2 mb-6">
+                {steps.map((step, idx) => {
+                  const isCompleted = completedSteps.includes(idx);
+                  const isActive = activeStep === idx;
+                  const Icon = step.icon;
+
+                  return (
+                    <div key={idx} className="flex items-center gap-3 py-1.5">
+                      <div className="w-6 flex-shrink-0">
+                        {getIcon(Icon, isCompleted, isActive)}
+                      </div>
+
+                      <span className={`
+                        flex-1 font-mono text-sm transition-all duration-300
+                        ${isCompleted ? 'text-green-400' : ''}
+                        ${isActive ? 'text-green-500' : 'text-gray-500'}
+                        ${!isCompleted && !isActive ? 'text-gray-600' : ''}
+                      `}>
+                        {step.label}
+                      </span>
+
+                      {isActive && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Progress */}
+              <div className="mt-4 pt-2">
+                <div className="flex justify-between text-[10px] text-gray-500 font-mono mb-1.5">
+                  <span>Initialisation</span>
+                  <span>{Math.round((completedSteps.length / steps.length) * 100)}%</span>
+                </div>
+                <div className="h-0.5 bg-gray-800 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all duration-200 ease-out"
+                    style={{ width: `${(completedSteps.length / steps.length) * 100}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-5 py-2.5 bg-black/30 border-t border-green-500/20">
+              <div className="flex justify-between text-[9px] text-green-500/40 font-mono">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  <span>Golden Invest Terminal v3.0</span>
+                </div>
+                <div className="flex gap-3">
+                  <span>🤝 Connexion</span>
+                  <span>⚡ Prêt</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes scaleIn {
-          from {
-            transform: scale(0);
-            opacity: 0;
-          }
-          to {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-scaleIn {
-          animation: scaleIn 0.2s ease-out forwards;
-        }
-        .animate-fadeInUp {
-          animation: fadeInUp 0.3s ease-out forwards;
-        }
-      `}</style>
     </div>
   );
 }
