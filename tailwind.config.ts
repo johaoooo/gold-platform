@@ -10,9 +10,10 @@ const config: Config = {
       colors: {
         bg: "#05090a",
         surface: "#0a120b",
-        gold: "#22c55e",           // émeraude principal
-        "gold-light": "#4ade80",   // émeraude clair
-        "gold-glow": "#86efac",    // émeraude très clair / glow
+        "surface-2": "#111a12",    // ✅ ajouté — manquait
+        gold: "#22c55e",
+        "gold-light": "#4ade80",
+        "gold-glow": "#86efac",
         "text-1": "#ffffff",
         "text-2": "#8fa894",
       },

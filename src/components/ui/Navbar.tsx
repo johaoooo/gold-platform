@@ -1,8 +1,8 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu, X, LogOut, User, Sun, Moon } from 'lucide-react';
+import { Menu, X, User, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
 function GoldenLogo() {
@@ -37,21 +37,14 @@ export default function Navbar() {
     { href: '/contact', label: 'Contact' },
   ];
 
-  // Fonction pour charger l'utilisateur depuis localStorage
-  const loadUser = () => {
+  const loadUser = useCallback(() => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else {
-      setUser(null);
-    }
-  };
+    setUser(storedUser ? JSON.parse(storedUser) : null);
+  }, []);
 
   useEffect(() => {
-    // Charger l'utilisateur au montage
     loadUser();
 
-    // Écouter les changements dans localStorage (quand un autre onglet modifie)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'user') {
         loadUser();
@@ -60,12 +53,11 @@ export default function Navbar() {
     window.addEventListener('storage', handleStorageChange);
 
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  }, [loadUser]);
 
-  // Écouter les changements de route pour recharger l'utilisateur
   useEffect(() => {
     loadUser();
-  }, [pathname]);
+  }, [pathname, loadUser]);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20);
@@ -246,7 +238,7 @@ export default function Navbar() {
                 Mon profil
               </Link>
               <button
-                onClick={() => { handleLogout(); setIsOpen(false); }}
+                onClick={handleLogout}
                 className={`text-xl font-black tracking-tight transition-all duration-300 ${theme === 'dark' ? 'text-white/60 hover:text-red-400' : 'text-gray-600 hover:text-red-500'}`}
                 style={{ fontFamily: 'Georgia, serif' }}
               >
@@ -269,8 +261,8 @@ export default function Navbar() {
                 href="/inscription"
                 onClick={() => setIsOpen(false)}
                 className={`px-8 py-3 text-[13px] font-black uppercase tracking-wider rounded-full transition-all ${
-                  theme === 'dark' 
-                    ? 'bg-gold text-bg hover:bg-gold-light' 
+                  theme === 'dark'
+                    ? 'bg-gold text-bg hover:bg-gold-light'
                     : 'bg-green-500 text-white hover:bg-green-600'
                 }`}
                 style={{ fontFamily: 'Georgia, serif' }}
