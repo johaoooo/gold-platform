@@ -73,28 +73,32 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <GoldenLogo />
 
-          <div className="hidden md:flex items-center gap-2">
-            {navLinks.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`text-[12px] uppercase tracking-[0.2em] px-5 py-2 rounded-full border transition-all duration-300 font-black ${
-                  pathname === item.href
-                    ? 'text-bg bg-gold border-gold'
-                    : 'text-white border-transparent hover:text-white hover:bg-gold/10 hover:border-gold/30'
-                }`}
-                style={{ fontFamily: 'Georgia, serif' }}
-              >
-                {item.label}
-              </Link>
-            ))}
+          {/* Liens de navigation - centrés avec flex-1 pour occuper l'espace */}
+          <div className="hidden md:flex flex-1 justify-center ml-40">
+            <div className="flex items-center gap-16">
+              {navLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`text-[16px] font-black tracking-tight transition-all duration-300 ${
+                    pathname === item.href
+                      ? 'text-green-500'
+                      : 'text-white hover:text-green-500'
+                  }`}
+                  style={{ fontFamily: 'Georgia, serif' }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
+          {/* Actions à droite (thème, connexion, etc.) */}
           <div className="hidden md:flex items-center gap-4">
             {/* Bouton thème */}
             <button
               onClick={toggleTheme}
-              className="flex items-center gap-1 text-[12px] uppercase tracking-[0.2em] text-white/60 hover:text-gold transition-all px-3 py-2 rounded-full border border-transparent hover:border-white/20"
+              className="flex items-center gap-1 text-[12px] font-black tracking-tight text-white/60 hover:text-green-500 transition-all px-3 py-2 rounded-full border border-transparent hover:border-white/20"
               style={{ fontFamily: 'Georgia, serif' }}
             >
               {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
@@ -116,17 +120,16 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/profil"
-                  className="text-[12px] uppercase tracking-[0.2em] text-white hover:text-gold transition-all px-4 py-2 rounded-full border border-transparent hover:border-gold/20 font-black"
+                  className="text-[14px] font-black tracking-tight text-white hover:text-green-500 transition-all"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Mon profil
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 text-[12px] uppercase tracking-[0.2em] text-white/60 hover:text-red-400 transition-all px-4 py-2 rounded-full border border-transparent hover:border-red-500/30 hover:bg-red-500/10 font-black"
+                  className="text-[14px] font-black tracking-tight text-white/60 hover:text-red-400 transition-all"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
-                  <LogOut size={14} />
                   Déconnexion
                 </button>
               </>
@@ -134,7 +137,7 @@ export default function Navbar() {
               <>
                 <Link
                   href="/connexion"
-                  className="text-[12px] uppercase tracking-[0.2em] text-white hover:text-gold transition-all px-4 py-2 rounded-full border border-transparent hover:border-white/20 font-black"
+                  className="text-[14px] font-black tracking-tight text-white hover:text-green-500 transition-all"
                   style={{ fontFamily: 'Georgia, serif' }}
                 >
                   Connexion
@@ -150,10 +153,11 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* Mobile */}
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-gold transition-all px-3 py-2 rounded-full border border-white/10 hover:border-white/30"
+              className="text-[11px] font-black tracking-tight text-white/60 hover:text-green-500 transition-all px-3 py-2 rounded-full border border-white/10 hover:border-white/30"
               style={{ fontFamily: 'Georgia, serif' }}
             >
               {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
@@ -161,7 +165,7 @@ export default function Navbar() {
             {!user && (
               <Link
                 href="/connexion"
-                className="text-[11px] uppercase tracking-[0.2em] text-white hover:text-white transition-all px-3 py-2 rounded-full border border-white/10 hover:border-white/30 font-black"
+                className="text-[11px] font-black tracking-tight text-white hover:text-green-500 transition-all px-3 py-2 rounded-full border border-white/10 hover:border-white/30"
                 style={{ fontFamily: 'Georgia, serif' }}
               >
                 Connexion
@@ -169,7 +173,7 @@ export default function Navbar() {
             )}
             <button
               onClick={() => setIsOpen((prev) => !prev)}
-              className="relative z-[110] text-white hover:text-gold transition-colors p-2 touch-manipulation"
+              className="relative z-[110] text-white hover:text-green-500 transition-colors p-2 touch-manipulation"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -177,8 +181,9 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* Mobile menu */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] bg-bg flex flex-col items-center justify-center gap-5 md:hidden">
+        <div className="fixed inset-0 z-[100] bg-bg flex flex-col items-center justify-center ml-40 gap-5 md:hidden">
           <button onClick={() => setIsOpen(false)} className="absolute top-5 right-4 z-[110] text-white/50 hover:text-white p-2">
             <X size={28} />
           </button>
@@ -198,10 +203,10 @@ export default function Navbar() {
               key={item.href}
               href={item.href}
               onClick={() => setIsOpen(false)}
-              className={`w-64 text-center text-sm uppercase tracking-[0.3em] px-8 py-4 rounded-full border transition-all duration-300 font-black ${
+              className={`text-2xl font-black tracking-tight transition-all duration-300 ${
                 pathname === item.href
-                  ? 'text-bg bg-gold border-gold'
-                  : 'text-white/70 border-white/10 hover:text-white hover:bg-gold/10 hover:border-gold/30'
+                  ? 'text-green-500'
+                  : 'text-white/70 hover:text-green-500'
               }`}
               style={{ fontFamily: 'Georgia, serif' }}
             >
@@ -228,23 +233,22 @@ export default function Navbar() {
               <Link
                 href="/profil"
                 onClick={() => setIsOpen(false)}
-                className="text-sm uppercase tracking-[0.2em] text-white hover:text-gold transition py-2 font-black"
+                className="text-xl font-black tracking-tight text-white/70 hover:text-green-500 transition py-2"
                 style={{ fontFamily: 'Georgia, serif' }}
               >
                 Mon profil
               </Link>
               <button
                 onClick={() => { handleLogout(); setIsOpen(false); }}
-                className="flex items-center gap-2 text-sm uppercase tracking-[0.2em] text-white/60 hover:text-red-400 transition py-2 font-black"
+                className="text-xl font-black tracking-tight text-white/60 hover:text-red-400 transition py-2"
                 style={{ fontFamily: 'Georgia, serif' }}
               >
-                <LogOut size={16} />
                 Déconnexion
               </button>
             </>
           ) : (
             <>
-              <Link href="/connexion" onClick={() => setIsOpen(false)} className="text-sm uppercase tracking-[0.2em] text-white/60 hover:text-white transition py-2 font-black" style={{ fontFamily: 'Georgia, serif' }}>
+              <Link href="/connexion" onClick={() => setIsOpen(false)} className="text-xl font-black tracking-tight text-white/70 hover:text-green-500 transition py-2" style={{ fontFamily: 'Georgia, serif' }}>
                 Connexion
               </Link>
               <Link href="/inscription" onClick={() => setIsOpen(false)} className="w-64 text-center px-10 py-4 text-[12px] font-black uppercase tracking-wider rounded-full bg-gold text-bg hover:bg-gold-light transition-all" style={{ fontFamily: 'Georgia, serif' }}>
