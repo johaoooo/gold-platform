@@ -94,7 +94,6 @@ export default function Hero() {
     { value: stats.pays,         label: 'Pays couverts',      suffix: '' },
   ];
 
-  // Texte défilant avec "visionnaires" et "innovateurs"
   const marqueeText = "visionnaires ✦ innovateurs ✦ ";
 
   return (
@@ -136,7 +135,6 @@ export default function Hero() {
               </span>
             </div>
 
-            {/* Titre avec marquee */}
             <h1 className="text-4xl md:text-6xl font-black mb-4 leading-tight tracking-tight" style={{ fontFamily: 'Georgia, serif', fontWeight: 900 }}>
               <span className="text-green-500">Connecter les</span>
               <br />
@@ -158,10 +156,10 @@ export default function Hero() {
               </p>
             </div>
 
-            {/* Boutons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <Link href="/deposer">
-                <button className={`group px-7 py-3.5 text-sm font-bold uppercase tracking-wider rounded-full transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
+            {/* Boutons centrés sur mobile */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              <Link href="/deposer" className="w-full sm:w-auto">
+                <button className={`w-full sm:w-auto group px-7 py-3.5 text-sm font-bold uppercase tracking-wider rounded-full transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 ${
                   theme === 'dark' 
                     ? 'bg-white text-black hover:bg-white/90' 
                     : 'bg-green-500 text-white hover:bg-green-600'
@@ -170,8 +168,8 @@ export default function Hero() {
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
               </Link>
-              <Link href="/projets">
-                <button className="group px-7 py-3.5 text-sm font-bold uppercase tracking-wider rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white transition-all duration-300 hover:scale-105 flex items-center gap-2">
+              <Link href="/projets" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto group px-7 py-3.5 text-sm font-bold uppercase tracking-wider rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
                   Explorer les projets
                   <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                 </button>
