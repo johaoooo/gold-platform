@@ -2,8 +2,6 @@ const API_URL = typeof window !== 'undefined' && window.location.hostname === 'l
   ? 'http://127.0.0.1:8000/api'
   : process.env.NEXT_PUBLIC_API_URL || 'https://backend-gold-iubc.onrender.com/api';
 
-// ─── Auth ─────────────────────────────────────────────────────────────────────
-
 export async function loginUser(username: string, password: string) {
   const res = await fetch(`${API_URL}/auth/login/`, {
     method: 'POST',
@@ -11,17 +9,11 @@ export async function loginUser(username: string, password: string) {
     body: JSON.stringify({ username, password }),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Identifiants incorrects');
+  if (!res.ok) throw new Error(data.error || data.detail || 'Identifiants incorrects');
   return data;
 }
 
-export async function registerUser(payload: {
-  username: string;
-  email: string;
-  password: string;
-  role: string;
-  phone: string;
-}) {
+export async function registerUser(payload: any) {
   const res = await fetch(`${API_URL}/auth/register/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -31,8 +23,6 @@ export async function registerUser(payload: {
   if (!res.ok) throw new Error(JSON.stringify(data));
   return data;
 }
-
-// ─── Tokens ───────────────────────────────────────────────────────────────────
 
 export function saveTokens(access: string, refresh: string) {
   if (typeof window === 'undefined') return;
@@ -62,8 +52,6 @@ export function isAuthenticated(): boolean {
   return !!getAccessToken();
 }
 
-// ─── Refresh automatique ──────────────────────────────────────────────────────
-
 export async function refreshAccessToken(): Promise<string | null> {
   const refresh = getRefreshToken();
   if (!refresh) return null;
@@ -83,8 +71,6 @@ export async function refreshAccessToken(): Promise<string | null> {
   }
 }
 
-// ─── Fetch authentifié ────────────────────────────────────────────────────────
-
 export async function authFetch(url: string, options: RequestInit = {}): Promise<Response> {
   let token = getAccessToken();
   const makeRequest = (t: string | null) =>
@@ -98,26 +84,17 @@ export async function authFetch(url: string, options: RequestInit = {}): Promise
     });
 
   let res = await makeRequest(token);
-
   if (res.status === 401) {
     token = await refreshAccessToken();
-    if (!token) throw new Error('Session expirée, veuillez vous reconnecter.');
+    if (!token) throw new Error('Session expirée');
     res = await makeRequest(token);
   }
-
   return res;
 }
 
-// ─── Projets (PUBLIC — pas besoin de token) ───────────────────────────────────
-
-export async function getProjects(filters?: {
-  secteur?: string;
-  localisation?: string;
-  montant_min?: number;
-  montant_max?: number;
-}) {
+export async function getProjects(filters?: any) {
   const params = new URLSearchParams();
-  if (filters?.secteur)     params.append('secteur', filters.secteur);
+  if (filters?.secteur) params.append('secteur', filters.secteur);
   if (filters?.localisation) params.append('localisation', filters.localisation);
   if (filters?.montant_min) params.append('montant_min', String(filters.montant_min));
   if (filters?.montant_max) params.append('montant_max', String(filters.montant_max));
@@ -139,13 +116,7 @@ export async function getProjectById(id: number) {
   return data;
 }
 
-export async function createProject(payload: {
-  titre: string;
-  secteur: string;
-  localisation: string;
-  montant_cible: number;
-  description: string;
-}) {
+export async function createProject(payload: any) {
   const res = await authFetch(`${API_URL}/projects/`, {
     method: 'POST',
     body: JSON.stringify(payload),
@@ -155,11 +126,7 @@ export async function createProject(payload: {
   return data;
 }
 
-export async function investInProject(payload: {
-  projet_id: number;
-  montant: number;
-  message?: string;
-}) {
+export async function investInProject(payload: { projet_id: number; montant: number; message?: string }) {
   const res = await authFetch(`${API_URL}/investments/create/`, {
     method: 'POST',
     body: JSON.stringify(payload),
@@ -175,8 +142,6 @@ export async function getMyInvestments() {
   if (!res.ok) throw new Error('Erreur lors du chargement des investissements');
   return data;
 }
-
-// ─── Profil ───────────────────────────────────────────────────────────────────
 
 export async function getProfile() {
   const res = await authFetch(`${API_URL}/auth/profile/`);
