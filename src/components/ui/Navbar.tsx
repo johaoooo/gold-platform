@@ -37,10 +37,35 @@ export default function Navbar() {
     { href: '/contact', label: 'Contact' },
   ];
 
-  useEffect(() => {
+  // Fonction pour charger l'utilisateur depuis localStorage
+  const loadUser = () => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    // Charger l'utilisateur au montage
+    loadUser();
+
+    // Écouter les changements dans localStorage (quand un autre onglet modifie)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        loadUser();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
+
+  // Écouter les changements de route pour recharger l'utilisateur
+  useEffect(() => {
+    loadUser();
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20);
@@ -73,7 +98,6 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <GoldenLogo />
 
-          {/* Desktop nav links */}
           <div className="hidden md:flex flex-1 justify-center ml-40">
             <div className="flex items-center gap-12">
               {navLinks.map((item) => (
@@ -93,7 +117,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-4">
             <button
               onClick={toggleTheme}
@@ -152,7 +175,6 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile burger */}
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={toggleTheme}
@@ -170,7 +192,6 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
       {isOpen && (
         <div className={`fixed inset-0 z-[100] ${theme === 'dark' ? 'bg-bg' : 'bg-white'} flex flex-col items-center justify-center gap-5 md:hidden overflow-y-auto py-12`}>
           <button onClick={() => setIsOpen(false)} className="absolute top-5 right-4 z-[110] text-white/50 hover:text-white p-2">
