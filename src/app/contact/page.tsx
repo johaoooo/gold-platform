@@ -2,64 +2,121 @@
 
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
+import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSent(true);
+    setTimeout(() => setSent(false), 3000);
+  };
+
   return (
-    <main className="pt-32 pb-24 bg-bg min-h-screen font-syne">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
-            Nous <span className="text-green-400">contacter</span>
+    <main className="pt-32 pb-20 bg-bg">
+      <div className="max-w-4xl mx-auto px-6">
+        
+        {/* En-tête */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-black text-white mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+            Nous <span className="text-green-500">contacter</span>
           </h1>
-          <div className="h-0.5 w-16 bg-green-400 mx-auto opacity-60"></div>
+          <p className="text-text-2 text-sm max-w-lg mx-auto">
+            Une question ? Notre équipe est à votre écoute.
+          </p>
         </div>
 
-        <section className="max-w-lg mx-auto mb-24">
-          <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="bg-surface/60 backdrop-blur-md border border-green-500/10 p-10 rounded-xl shadow-2xl space-y-6">
-            <div className="grid grid-cols-1 gap-6">
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] uppercase tracking-widest text-green-400 font-bold">Identité complète</label>
-                <input type="text" required placeholder="Votre nom" className="bg-bg border border-white/10 rounded-md px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-green-500/60 transition-all" />
+        {/* Contact info */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="bg-surface/50 rounded-xl p-6 text-center border border-white/5">
+            <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-3">
+              <Phone size={18} className="text-green-500" />
+            </div>
+            <p className="text-white text-sm font-medium">+229 97 00 00 00</p>
+            <p className="text-text-2 text-xs">Ligne directe</p>
+          </div>
+          
+          <div className="bg-surface/50 rounded-xl p-6 text-center border border-white/5">
+            <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-3">
+              <Mail size={18} className="text-green-500" />
+            </div>
+            <p className="text-white text-sm font-medium">contact@golden-invest.com</p>
+            <p className="text-text-2 text-xs">Email</p>
+          </div>
+          
+          <div className="bg-surface/50 rounded-xl p-6 text-center border border-white/5">
+            <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-3">
+              <MapPin size={18} className="text-green-500" />
+            </div>
+            <p className="text-white text-sm font-medium">Cotonou & Porto-Novo</p>
+            <p className="text-text-2 text-xs">Bénin</p>
+          </div>
+        </div>
+
+        {/* Formulaire */}
+        <div className="bg-surface/50 rounded-xl border border-white/5 p-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="text-xs text-text-2 mb-1 block">Nom complet</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Votre nom"
+                  className="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500"
+                />
               </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] uppercase tracking-widest text-green-400 font-bold">Email de contact</label>
-                <input type="email" required placeholder="nom@exemple.com" className="bg-bg border border-white/10 rounded-md px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-green-500/60 transition-all" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] uppercase tracking-widest text-green-400 font-bold">Service concerné</label>
-                <select className="bg-bg border border-white/10 rounded-md px-4 py-3 text-sm text-white focus:outline-none focus:border-green-500/60 transition-all cursor-pointer">
-                  <option>Investissement</option>
-                  <option>Audit de Projet</option>
-                  <option>Conseil Stratégique</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] uppercase tracking-widest text-green-400 font-bold">Votre demande</label>
-                <textarea rows={4} required placeholder="Expliquez votre besoin..." className="bg-bg border border-white/10 rounded-md px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-green-500/60 transition-all resize-none"></textarea>
+              <div>
+                <label className="text-xs text-text-2 mb-1 block">Email</label>
+                <input
+                  type="email"
+                  required
+                  placeholder="nom@exemple.com"
+                  className="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500"
+                />
               </div>
             </div>
-            <Button variant="gold" type="submit" size="sm" className="w-full py-5 text-[11px] uppercase tracking-[0.4em] font-bold">
-              {sent ? "✓ Demande transmise" : "Envoyer le formulaire"}
-            </Button>
-          </form>
-        </section>
+            
+            <div>
+              <label className="text-xs text-text-2 mb-1 block">Service concerné</label>
+              <select className="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500">
+                <option>Investissement</option>
+                <option>Audit de Projet</option>
+                <option>Conseil Stratégique</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="text-xs text-text-2 mb-1 block">Message</label>
+              <textarea
+                rows={4}
+                required
+                placeholder="Votre message..."
+                className="w-full bg-bg border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-green-500 resize-none"
+              />
+            </div>
 
-        <section className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 pt-16 border-t border-green-500/10">
-          <div className="text-center md:text-left">
-            <h4 className="text-green-400 uppercase tracking-[0.3em] text-[10px] mb-3 font-bold">Bénin — Cotonou</h4>
-            <p className="text-white text-xs leading-relaxed font-medium uppercase tracking-wider">Immeuble Golden, Haie Vive</p>
-          </div>
-          <div className="text-center">
-            <h4 className="text-green-400 uppercase tracking-[0.3em] text-[10px] mb-3 font-bold">Bénin — Porto-Novo</h4>
-            <p className="text-white text-xs leading-relaxed font-medium uppercase tracking-wider">Zone Administrative</p>
-          </div>
-          <div className="text-center md:text-right">
-            <h4 className="text-green-400 uppercase tracking-[0.3em] text-[10px] mb-3 font-bold">Ligne Directe</h4>
-            <p className="text-white text-sm font-bold tracking-widest">+229 97 00 00 00</p>
-          </div>
-        </section>
+            <button
+              type="submit"
+              disabled={sent}
+              className="w-full py-3 rounded-lg bg-green-500 hover:bg-green-600 text-white font-bold text-sm uppercase tracking-wider transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {sent ? (
+                <span className="flex items-center justify-center gap-2">
+                  <CheckCircle size={16} />
+                  Message envoyé
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2">
+                  <Send size={14} />
+                  Envoyer
+                </span>
+              )}
+            </button>
+          </form>
+        </div>
+
       </div>
     </main>
   );

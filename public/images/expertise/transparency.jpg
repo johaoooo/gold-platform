@@ -1,0 +1,5 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#6b21a5"/>
+  <circle cx="200" cy="150" r="80" fill="#a855f7"/>
+  <text x="200" y="160" text-anchor="middle" fill="white" font-size="20">Transparence</text>
+</svg>

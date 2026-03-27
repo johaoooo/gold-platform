@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "processus": "Processus",
+    "projets": "Projets",
+    "reseau": "Réseau",
+    "contact": "Contact",
+    "connexion": "Connexion",
+    "commencer": "Commencer",
+    "mon_profil": "Mon profil",
+    "deconnexion": "Déconnexion"
+  },
+  "hero": {
+    "title": "L'investissement stratégique en Afrique",
+    "subtitle": "Golden Invest connecte les porteurs de projets innovants aux investisseurs visionnaires pour bâtir l'économie de demain.",
+    "explore": "Explorer les projets",
+    "create_account": "Créer un compte"
+  },
+  "stats": {
+    "projects": "Projets financés",
+    "invested": "FCFA investis",
+    "return": "Rendement moyen",
+    "satisfaction": "Taux de satisfaction"
+  },
+  "footer": {
+    "description": "Connecter les visionnaires aux capitaux. La plateforme de référence pour l'investissement en Afrique.",
+    "platform": "Plateforme",
+    "how_it_works": "Comment ça marche",
+    "projects": "Projets",
+    "network": "Réseau",
+    "resources": "Ressources",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "support": "Support",
+    "legal": "Mentions légales",
+    "contact": "Contact",
+    "newsletter": "Restez informé des nouveaux projets et opportunités",
+    "subscribe": "S'abonner",
+    "copyright": "Tous droits réservés",
+    "made_with": "Fait avec passion pour l'Afrique"
+  }
+}

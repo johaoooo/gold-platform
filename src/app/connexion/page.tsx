@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import Button from '@/components/ui/Button';
+import { Mail, Lock, LogIn } from 'lucide-react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
@@ -27,9 +27,8 @@ export default function ConnexionPage() {
       const data = await response.json();
 
       if (response.ok) {
-        // Vérifier si le compte est approuvé
         if (data.user.role === 'investisseur' && data.user.is_approved === false) {
-          toast.error('Votre compte est en attente de validation par notre équipe (24-48h).');
+          toast.error('Votre compte est en attente de validation (24-48h).');
           setLoading(false);
           return;
         }
@@ -38,16 +37,13 @@ export default function ConnexionPage() {
         localStorage.setItem('refresh_token', data.refresh);
         localStorage.setItem('user', JSON.stringify(data.user));
         document.cookie = `access_token=${data.access}; path=/; max-age=3600; SameSite=Lax`;
-        document.cookie = `refresh_token=${data.refresh}; path=/; max-age=604800; SameSite=Lax`;
 
         toast.success(`Bienvenue ${data.user.username} !`);
 
         if (data.user.role === 'investisseur') {
-          setTimeout(() => window.location.href = '/dashboard/investisseur', 500);
-        } else if (data.user.role === 'porteur') {
-          setTimeout(() => window.location.href = '/dashboard/porteur', 500);
+          setTimeout(() => router.push('/dashboard/investisseur'), 500);
         } else {
-          setTimeout(() => window.location.href = '/', 500);
+          setTimeout(() => router.push('/dashboard/porteur'), 500);
         }
       } else {
         toast.error(data.error || data.detail || 'Identifiants incorrects');
@@ -60,46 +56,65 @@ export default function ConnexionPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg py-20">
+    <main className="pt-32 pb-20 bg-bg min-h-screen flex items-center justify-center">
       <div className="max-w-md w-full mx-auto px-6">
-        <div className="bg-surface rounded-xl p-8 shadow-xl">
-          <h1 className="text-3xl font-playfair text-gold text-center mb-2">Connexion</h1>
-          <p className="text-center text-text-2 text-sm mb-8">Accédez à votre espace Golden Invest</p>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-black text-white mb-2" style={{ fontFamily: 'Georgia, serif' }}>
+            Connexion
+          </h1>
+          <p className="text-text-2 text-sm">Accédez à votre espace Golden Invest</p>
+        </div>
 
+        <div className="bg-surface/50 rounded-xl border border-white/5 p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-[10px] uppercase tracking-[0.2em] text-green-500 font-bold mb-1">Nom d'utilisateur</label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 bg-bg border border-surface-2 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
-                required
-              />
+              <label className="text-xs text-text-2 mb-1 block">Nom d'utilisateur</label>
+              <div className="relative">
+                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-2" />
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full bg-bg border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white text-sm focus:outline-none focus:border-green-500"
+                  placeholder="johndoe"
+                  required
+                />
+              </div>
             </div>
 
             <div>
-              <label className="block text-[10px] uppercase tracking-[0.2em] text-green-500 font-bold mb-1">Mot de passe</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-bg border border-surface-2 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
-                required
-              />
+              <label className="text-xs text-text-2 mb-1 block">Mot de passe</label>
+              <div className="relative">
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-2" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-bg border border-white/10 rounded-lg pl-10 pr-4 py-3 text-white text-sm focus:outline-none focus:border-green-500"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
             </div>
 
-            <Button type="submit" variant="gold" className="w-full py-3" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-lg bg-green-500 hover:bg-green-600 text-white font-bold text-sm uppercase tracking-wider transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              <LogIn size={16} />
               {loading ? 'Connexion...' : 'Se connecter'}
-            </Button>
+            </button>
           </form>
 
           <p className="text-center text-text-2 text-sm mt-6">
             Pas encore de compte ?{' '}
-            <a href="/inscription" className="text-gold hover:underline">S'inscrire</a>
+            <a href="/inscription" className="text-green-500 hover:underline font-medium">
+              S'inscrire
+            </a>
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

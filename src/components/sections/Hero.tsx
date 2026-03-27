@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import Button from "../ui/Button";
 
 const API_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
@@ -72,7 +72,6 @@ export default function Hero() {
       .catch(() => {});
     setTimeout(() => setAnimate(true), 500);
 
-    // Autoplay
     timerRef.current = setInterval(() => {
       setCurrent(c => (c + 1) % slides.length);
     }, 5000);
@@ -118,53 +117,65 @@ export default function Hero() {
               priority={i === 0}
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/85 to-black/75" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/80 to-black/70" />
           </div>
         ))}
       </div>
 
       {/* Contenu */}
-      <div className="relative z-20 min-h-screen flex items-center justify-end pb-32 pt-24">
+      <div className="relative z-20 min-h-screen flex items-center justify-center pb-32 pt-24">
         <div className="max-w-6xl mx-auto px-6 text-center">
 
+          {/* Badge */}
           <div className="mb-6">
-            <span key={current} className="inline-block px-4 py-1 bg-gold/20 text-gold rounded-full text-sm font-syne backdrop-blur-sm" style={{ animation: 'fadeUp 0.5s ease forwards' }}>
+            <span key={current} className="inline-block px-4 py-1 bg-green-500/20 text-green-500 rounded-full text-sm font-syne backdrop-blur-sm transition-all duration-500">
               {slides[current].badge}
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-playfair text-white mb-4 leading-tight">
+          {/* Titre */}
+          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight tracking-tight" style={{ fontFamily: 'Georgia, serif', fontWeight: 900 }}>
             Connecter les visionnaires
             <br />
-            <span className="text-gold">aux capitaux</span>
+            <span className="text-green-500">aux capitaux</span>
           </h1>
 
-          <div className="h-16 flex items-center justify-center mb-10">
-            <p key={current} className="text-text-2 font-dm text-lg md:text-xl max-w-2xl mx-auto leading-relaxed" style={{ animation: 'fadeUp 0.5s ease forwards' }}>
+          {/* Description */}
+          <div className="h-auto min-h-[80px] flex items-center justify-center mb-10">
+            <p key={current} className="text-text-2 font-dm text-lg md:text-xl max-w-2xl mx-auto leading-relaxed backdrop-blur-sm bg-black/20 px-4 py-2 rounded-xl transition-all duration-500">
               {slides[current].description}
             </p>
           </div>
 
+          {/* Boutons */}
           <div className="flex flex-col sm:flex-row gap-5 justify-center mb-20">
             <Link href="/deposer">
-              <Button variant="gold" size="lg" className="px-8 py-4 text-lg hover:scale-105 transition-transform">
-                Déposer mon projet
-              </Button>
+              <button className="group relative px-8 py-4 text-base font-bold uppercase tracking-wider rounded-full overflow-hidden transition-all duration-300 hover:scale-105">
+                <span className="absolute inset-0 bg-green-500" />
+                <span className="relative flex items-center gap-2 text-white z-10">
+                  Déposer mon projet
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </span>
+              </button>
             </Link>
             <Link href="/projets">
-              <Button variant="outline" size="lg" className="px-8 py-4 text-lg hover:scale-105 transition-transform border-green-500/50 hover:bg-green-500/10">
-                Explorer les projets
-              </Button>
+              <button className="group px-8 py-4 text-base font-bold uppercase tracking-wider rounded-full border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white transition-all duration-300 hover:scale-105">
+                <span className="flex items-center gap-2">
+                  Explorer les projets
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </span>
+              </button>
             </Link>
           </div>
 
+          {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-green-500/30 pt-12">
             {statsList.map((stat, index) => (
               <div key={index} className="text-center group">
-                <div className="text-4xl md:text-5xl font-playfair text-gold font-bold mb-2">
+                <div className="text-4xl md:text-5xl font-playfair text-green-500 font-bold mb-2">
                   {animate ? <AnimatedCounter end={stat.value} suffix={stat.suffix} /> : `0${stat.suffix}`}
                 </div>
-                <div className="text-text-2 font-dm text-sm uppercase tracking-wider group-hover:text-gold transition-colors">
+                <div className="text-text-2 font-dm text-sm uppercase tracking-wider group-hover:text-green-500 transition-colors">
                   {stat.label}
                 </div>
               </div>
@@ -173,16 +184,18 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Flèches */}
+      {/* Flèches de navigation */}
       <button
         onClick={() => goTo(current - 1)}
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-gold/80 hover:border-gold transition-all duration-300"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-green-500/80 hover:border-green-500 transition-all duration-300"
+        aria-label="Slide précédent"
       >
         <ChevronLeft size={20} />
       </button>
       <button
         onClick={() => goTo(current + 1)}
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-gold/80 hover:border-gold transition-all duration-300"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-green-500/80 hover:border-green-500 transition-all duration-300"
+        aria-label="Slide suivant"
       >
         <ChevronRight size={20} />
       </button>
@@ -197,11 +210,11 @@ export default function Hero() {
               height: '8px',
               width: i === current ? '32px' : '8px',
               borderRadius: '4px',
-              background: i === current ? '#f0a500' : 'rgba(255,255,255,0.4)',
+              background: i === current ? '#22c55e' : 'rgba(255,255,255,0.4)',
               transition: 'all 0.3s ease',
-              border: 'none',
               cursor: 'pointer',
             }}
+            aria-label={`Aller à la slide ${i + 1}`}
           />
         ))}
       </div>

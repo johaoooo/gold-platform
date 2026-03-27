@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "processus": "Process",
+    "projets": "Projects",
+    "reseau": "Network",
+    "contact": "Contact",
+    "connexion": "Login",
+    "commencer": "Get Started",
+    "mon_profil": "My Profile",
+    "deconnexion": "Logout"
+  },
+  "hero": {
+    "title": "Strategic Investment in Africa",
+    "subtitle": "Golden Invest connects innovative project owners with visionary investors to build tomorrow's economy.",
+    "explore": "Explore Projects",
+    "create_account": "Create Account"
+  },
+  "stats": {
+    "projects": "Funded Projects",
+    "invested": "FCFA Invested",
+    "return": "Average Return",
+    "satisfaction": "Satisfaction Rate"
+  },
+  "footer": {
+    "description": "Connecting visionaries to capital. The reference platform for investment in Africa.",
+    "platform": "Platform",
+    "how_it_works": "How it works",
+    "projects": "Projects",
+    "network": "Network",
+    "resources": "Resources",
+    "blog": "Blog",
+    "faq": "FAQ",
+    "support": "Support",
+    "legal": "Legal",
+    "contact": "Contact",
+    "newsletter": "Stay informed about new projects and opportunities",
+    "subscribe": "Subscribe",
+    "copyright": "All rights reserved",
+    "made_with": "Made with passion for Africa"
+  }
+}

@@ -1,15 +1,19 @@
 import Link from 'next/link';
-import { Twitter, Linkedin, Instagram, MessageCircle, Mail, Phone, MapPin } from 'lucide-react';
+import { Twitter, Linkedin, Instagram, MessageCircle, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import Button from './Button';
 
 function GoldenLogo() {
   return (
     <Link href="/" className="flex flex-col items-start gap-1">
-      <span className="font-syne text-white tracking-[0.35em] text-[20px] font-light">GOLDEN</span>
+      <span className="text-white tracking-[0.35em] text-[20px] font-black" style={{ fontFamily: 'Georgia, serif' }}>
+        GOLDEN
+      </span>
       <div className="flex items-center gap-2">
-        <div className="w-10 h-px bg-gradient-to-r from-transparent to-gold opacity-80" />
-        <span className="font-syne text-gold tracking-[0.3em] text-[12px]">INVEST</span>
-        <div className="w-10 h-px bg-gradient-to-l from-transparent to-gold opacity-80" />
+        <div className="w-8 h-px bg-gradient-to-r from-transparent to-green-500 opacity-80" />
+        <span className="text-green-500 tracking-[0.3em] text-[12px] font-black" style={{ fontFamily: 'Georgia, serif' }}>
+          INVEST
+        </span>
+        <div className="w-8 h-px bg-gradient-to-l from-transparent to-green-500 opacity-80" />
       </div>
     </Link>
   );
@@ -61,7 +65,7 @@ export default function Footer() {
           {/* Logo + Description */}
           <div className="lg:col-span-2">
             <GoldenLogo />
-            <p className="text-text-2 text-sm leading-relaxed mt-6 max-w-sm">
+            <p className="text-text-2 text-sm leading-relaxed mt-6 max-w-sm" style={{ fontFamily: 'Georgia, serif' }}>
               Connecter les visionnaires aux capitaux. La plateforme de référence pour l'investissement en Afrique.
             </p>
             <div className="flex gap-4 mt-6">
@@ -73,7 +77,7 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center text-white hover:bg-gold hover:text-surface transition-all duration-300 hover:scale-110"
+                    className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center text-white hover:bg-green-500 hover:text-white transition-all duration-300 hover:scale-110"
                     aria-label={social.name}
                   >
                     <Icon size={18} />
@@ -86,19 +90,20 @@ export default function Footer() {
           {/* Liens */}
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h4 className="text-gold font-bold uppercase text-sm tracking-wider mb-6">
+              <h4 className="text-green-500 font-black uppercase text-sm tracking-wider mb-6" style={{ fontFamily: 'Georgia, serif' }}>
                 {section.title}
               </h4>
               <ul className="space-y-3">
                 {section.links.map((link) => {
-                  const Icon = 'icon' in link ? link.icon : null;
+                  const Icon = link.icon;
                   return (
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="text-text-2 hover:text-gold transition-colors text-sm flex items-center gap-2"
+                        className="text-text-2 hover:text-green-500 transition-colors text-sm flex items-center gap-2 group"
+                        style={{ fontFamily: 'Georgia, serif' }}
                       >
-                        {Icon && <Icon size={14} className="text-gold/60" />}
+                        {Icon && <Icon size={14} className="text-green-500/60 group-hover:text-green-500" />}
                         <span>{link.label}</span>
                       </Link>
                     </li>
@@ -112,16 +117,17 @@ export default function Footer() {
         {/* Newsletter */}
         <div className="border-t border-green-500/20 pt-8 pb-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-text-2 text-sm">
+            <p className="text-text-2 text-sm" style={{ fontFamily: 'Georgia, serif' }}>
               Restez informé des nouveaux projets et opportunités
             </p>
             <div className="flex gap-3">
               <input
                 type="email"
                 placeholder="Votre email"
-                className="px-4 py-2 bg-surface-2 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-gold transition-colors"
+                className="px-4 py-2 bg-surface-2 border border-green-500/30 rounded-lg text-white focus:outline-none focus:border-green-500 transition-colors"
+                style={{ fontFamily: 'Georgia, serif' }}
               />
-              <Button variant="gold" size="sm">
+              <Button variant="gold" size="sm" className="bg-green-500 hover:bg-green-600 text-white">
                 S'abonner
               </Button>
             </div>
@@ -130,10 +136,10 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-green-500/20 pt-8 text-center">
-          <p className="text-text-3 text-xs tracking-wider">
+          <p className="text-text-3 text-xs tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>
             © {currentYear} GOLDEN INVEST — Tous droits réservés
           </p>
-          <p className="text-text-3 text-[10px] mt-2">
+          <p className="text-text-3 text-[10px] mt-2" style={{ fontFamily: 'Georgia, serif' }}>
             Fait avec passion pour l'Afrique
           </p>
         </div>
